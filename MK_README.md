@@ -1,7 +1,7 @@
 ### These instructions are used for Ubuntu 20.04. They could be used in WSL2 or as a dual boot. But it's highly recommended to be used as a dual boot.
 
 # PX4 Firmware
-## Checks
+### Checks
 Check any updates before cloning.
 
 ```
@@ -9,7 +9,7 @@ sudo apt-get update -y
 sudo apt-get upgrade -y
 sudo apt install git -y
 ```
-## Deps Before Cloning
+### Deps Before Cloning
 These installations solved all of the errors I faced.
 ```
 sudo apt install python3-pip -y
@@ -19,34 +19,36 @@ pip3 install --user jinja2
 pip3 install --user jsonschema
 ```
 
-## Cloning PX4
+### Cloning PX4
 Clone the branch `MK` from `Mu99-M/PX4-Autopilot` in home directory.
 ```
 cd ~
 git clone -b MK https://github.com/Mu99-M/PX4-Autopilot.git --recursive
 ```
-## Install gstreamer for SITL
+### Install gstreamer for SITL
 ```
 sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
 ```
-## Update (common.xml) & (iris.sdf.jinja)
+### Update (common.xml) & (iris.sdf.jinja)
 Unfortently, I wasn't able to push these 2 file for some reaseon, so they have to be updated manually.
 Firt, build px4. It will show an error and it won't continue, but it's ok for now.
 ```
 cd ~/PX4-Autopilot
 make px4_sitl gazebo
 ```
-### 1. common.xml
+1. common.xml
+
 Download the file from DroneLeaf onedrive [here](https://droneleaf.sharepoint.com/:u:/s/technical/ET_WUqM3u3xOqpPJwsCv1UwBCr1k-d1219Qgi8GG4Kp_vg?e=UNfQKu).
 
 Then, copy the downloaded file to this path `~/PX4-Autopilot/src/modules/mavlink/mavlink/message_definitions/v1.0/`. Or run the following command in the downloaded file path.
 ```
 cp ./common.xml ~/PX4-Autopilot/src/modules/mavlink/mavlink/message_definitions/v1.0/
 ```
-### 2. iris.sdf.jinja
+2. iris.sdf.jinja
+
 Open the file `~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/iris/iris.sdf.jinja`. Search for `</enable_lockstep>` and change its value from `1` to `0`.
 
-## Building PX4
+### Building PX4:
 Now you can build PX4 again for SITL without any problem. The final result of the following command should open gazebo with the drone in it.
 ```
 cd ~/PX4-Autopilot
@@ -61,17 +63,17 @@ For any other version check [this link](https://docs.px4.io/main/en/dev_setup/bu
 # ROS Noetic
 Refernce for ROS installation: [ROS Installation](http://wiki.ros.org/noetic/Installation/Ubuntu)
 
-## Setup your sources.list
+### Setup your sources.list:
 ```
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 ```
 
-## Set up your keys
+### Set up your keys:
 ```
 sudo apt install curl # if you haven't already installed curl
 curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
 ```
-## Installation
+### Installation:
 First, make sure your Debian package index is up-to-date:
 ```
 sudo apt update -y
@@ -80,17 +82,17 @@ Desktop-Full Install:
 ```
 sudo apt install ros-noetic-desktop-full -y
 ```
-## Environment setup
+### Environment setup:
 ```
 echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
-## Dependencies for building packages
+### Dependencies for building packages:
 ```
 sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential -y
 sudo apt install python3-rosdep -y
 ```
-## Initialize rosdep
+### Initialize rosdep:
 ```
 sudo rosdep init
 rosdep update
@@ -98,36 +100,37 @@ rosdep update
 
 # Mavros
 This is Mavros Source Installion. Refernces ([PX4 docs here](https://docs.px4.io/main/en/ros/mavros_installation.html#source-installation) and [Mavros repo on Github here](https://github.com/mavlink/mavros/tree/master/mavros#source-installation)). Note that they're using ROS Kinetic in the refernces and we are using ROS Noetic. The next instructions work for ROS Noetic.
-## Install Deps
+
+### Install Deps:
 ```
 sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
 ```
-## Create ROS workspace in your home directory
+### Create ROS workspace in your home directory:
 ```
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws
 catkin init
 wstool init src
 ```
-## Install MAVLink
+### Install MAVLink:
 ```
 rosinstall_generator --rosdistro noetic mavlink | tee /tmp/mavros.rosinstall
 ```
-## Install MAVROS: get source (upstream - released)
+### Install MAVROS: get source (upstream - released):
 ```
 rosinstall_generator --upstream mavros | tee -a /tmp/mavros.rosinstall
 ```
-## Create workspace & deps
+### Create workspace & deps:
 ```
 wstool merge -t src /tmp/mavros.rosinstall
 wstool update -t src -j4
 rosdep install --from-paths src --ignore-src -y
 ```
-## Install GeographicLib datasets:
+### Install GeographicLib datasets:
 ```
 sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh
 ```
-## Build source
+### Build source:
 ```
 catkin build
 ```
@@ -141,7 +144,7 @@ This node has 3 jobs.
 2. Arm the vehicle and checks if it's disarmed to try arming again.
 3. Publishing values to `ActuatorMotors` topic.
 
-## Installing
+### Installing:
 ```
 cd ~/catkin_ws/src/
 git clone -b master https://github.com/Mu99-M/offb.git --recursive
@@ -150,22 +153,22 @@ catkin build
 Now everthing is ready to be used.
 
 # How To Use in SITL
-Run in the terminal:
+### Run in the terminal:
 ```
 make px4_sitl gazebo
 ```
 
-In another terminal run:
+### Initialize mavros in another terminal:
 ```
 roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
 ```
-Now run the `offb` node in another terminal.
+### Now run the `offb` node in another terminal:
 ```
 rosrun offb offb_node
 ```
 
 # QGroundControl (QGC)
-## Deps Before Installing
+### Deps Before Installing:
 ```
 sudo usermod -a -G dialout $USER
 sudo apt-get remove modemmanager -y
@@ -175,7 +178,7 @@ sudo apt install libfuse2 -y
 ```
 After that you should sign out and sign in again to enable the change to user permissions. Please save any unsaved work.
 
-## To install QGroundControl:
+### To install QGroundControl:
 1. Download [QGroundControl.AppImage](https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl.AppImage).
 2. Install (and run) using the terminal commands:
 ```
