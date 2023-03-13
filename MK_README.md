@@ -1,3 +1,5 @@
+### These instructions are used for Ubunutu 20.04. They could be used in WSL2 or dual boot. But it's highly recommended to be used as a dual boot.
+
 # PX4 Firmware
 ## Checks
 Check any updates before cloning.
@@ -27,8 +29,8 @@ git clone -b MK https://github.com/Mu99-M/PX4-Autopilot.git --recursive
 ```
 sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
 ```
-
-# Install ROS Noetic
+## Update common.xml
+# ROS Noetic
 Refernce for ROS installation: [ROS Installation](http://wiki.ros.org/noetic/Installation/Ubuntu)
 
 ## Setup your sources.list
@@ -66,7 +68,7 @@ sudo rosdep init
 rosdep update
 ```
 
-# Install Mavros
+# Mavros
 This is Mavros Source Installion. Refernces ([PX4 docs here](https://docs.px4.io/main/en/ros/mavros_installation.html#source-installation) and [Mavros repo on Github here](https://github.com/mavlink/mavros/tree/master/mavros#source-installation)). Note that they're using ROS Kinetic in the refernces and we are using ROS Noetic. The next instructions work for ROS Noetic.
 ## Install Deps
 ```
@@ -105,6 +107,7 @@ Make sure that you use setup.bash from workspace. Else rosrun can't find nodes f
 ```
 source devel/setup.bash
 ```
+# offb Node
 
 # Install QGroundControl (QGC)
 
