@@ -139,6 +139,25 @@ Make sure that you use setup.bash from workspace. Else rosrun can't find nodes f
 ```
 source devel/setup.bash
 ```
+### Fetch our work:
+1. Mavros
+
+```
+cd ~/catkin_ws/src/mavros/
+git remote add upstream https://github.com/Mu99-M/mavros.git
+git fetch upstream
+git checkout MK_ROS
+```
+
+2. Mavlink
+
+```
+cd ~/catkin_ws/src/mavlink/
+git remote add upstream https://github.com/Mu99-M/mavlink-gbp-release.git
+git fetch upstream
+git checkout MK_MAVLINK
+```
+
 # offb Node
 This node has 3 jobs.
 1. Switch to offboard mode and checks if it's disconnected to try switching again.
