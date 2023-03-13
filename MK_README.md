@@ -133,6 +133,7 @@ sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh
 ```
 ### Build source:
 ```
+cd ~/catkin_ws
 catkin build
 ```
 Make sure that you use setup.bash from workspace. Else rosrun can't find nodes from this workspace.
@@ -157,6 +158,11 @@ git remote add upstream https://github.com/Mu99-M/mavlink-gbp-release.git
 git fetch upstream
 git checkout MK_MAVLINK
 ```
+### Rebuild catkin_ws:
+```
+cd ~/catkin_ws
+catkin build
+```
 
 # offb Node
 This node has 3 jobs.
@@ -168,6 +174,7 @@ This node has 3 jobs.
 ```
 cd ~/catkin_ws/src/
 git clone -b master https://github.com/Mu99-M/offb.git --recursive
+cd ~/catkin_ws
 catkin build
 ```
 Now everthing is ready to be used.
