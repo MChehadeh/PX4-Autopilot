@@ -182,6 +182,7 @@ Now everthing is ready to be used.
 # How To Use in SITL
 ### Run in the terminal:
 ```
+cd ~/PX4-Autopilot/
 make px4_sitl gazebo
 ```
 
@@ -211,5 +212,4 @@ After that you should sign out and sign in again to enable the change to user pe
 ```
 chmod +x ./QGroundControl.AppImage
 ./QGroundControl.AppImage  # (or double click)
-
 ```
