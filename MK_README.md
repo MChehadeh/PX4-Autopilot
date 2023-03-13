@@ -7,7 +7,7 @@ sudo apt-get update -y
 sudo apt-get upgrade -y
 sudo apt install git -y
 ```
-## Depends Before Cloning
+## Deps Before Cloning
 These installations solved all of the errors I faced.
 ```
 sudo apt install python3-pip -y
@@ -29,8 +29,82 @@ sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgst
 ```
 
 # Install ROS Noetic
+Refernce for ROS installation: [ROS Installation](http://wiki.ros.org/noetic/Installation/Ubuntu)
+
+## Setup your sources.list
+```
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+```
+
+## Set up your keys
+```
+sudo apt install curl # if you haven't already installed curl
+curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+```
+## Installation
+First, make sure your Debian package index is up-to-date:
+```
+sudo apt update -y
+```
+Desktop-Full Install:
+```
+sudo apt install ros-noetic-desktop-full -y
+```
+## Environment setup
+```
+echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+```
+## Dependencies for building packages
+```
+sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential -y
+sudo apt install python3-rosdep -y
+```
+## Initialize rosdep
+```
+sudo rosdep init
+rosdep update
+```
 
 # Install Mavros
+This is Mavros Source Installion. Refernces ([PX4 docs here](https://docs.px4.io/main/en/ros/mavros_installation.html#source-installation) and [Mavros repo on Github here](https://github.com/mavlink/mavros/tree/master/mavros#source-installation)). Note that they're using ROS Kinetic in the refernces and we are using ROS Noetic. The next instructions work for ROS Noetic.
+## Install Deps
+```
+sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
+```
+## Create ROS workspace in your home directory
+```
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws
+catkin init
+wstool init src
+```
+## Install MAVLink
+```
+rosinstall_generator --rosdistro noetic mavlink | tee /tmp/mavros.rosinstall
+```
+## Install MAVROS: get source (upstream - released)
+```
+rosinstall_generator --upstream mavros | tee -a /tmp/mavros.rosinstall
+```
+## Create workspace & deps
+```
+wstool merge -t src /tmp/mavros.rosinstall
+wstool update -t src -j4
+rosdep install --from-paths src --ignore-src -y
+```
+## Install GeographicLib datasets:
+```
+sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh
+```
+## Build source
+```
+catkin build
+```
+Make sure that you use setup.bash from workspace. Else rosrun can't find nodes from this workspace.
+```
+source devel/setup.bash
+```
 
 # Install QGroundControl (QGC)
 
