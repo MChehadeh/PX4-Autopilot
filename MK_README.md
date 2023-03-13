@@ -1,7 +1,7 @@
 ### These instructions are used for Ubuntu 20.04. They could be used in WSL2 or as a dual boot. But it's highly recommended to be used as a dual boot.
 
 # PX4 Firmware
-### Checks
+### Checks:
 Check any updates before cloning.
 
 ```
@@ -9,7 +9,7 @@ sudo apt-get update -y
 sudo apt-get upgrade -y
 sudo apt install git -y
 ```
-### Deps Before Cloning
+### Deps Before Cloning:
 These installations solved all of the errors I faced.
 ```
 sudo apt install python3-pip -y
@@ -19,23 +19,24 @@ pip3 install --user jinja2
 pip3 install --user jsonschema
 ```
 
-### Cloning PX4
+### Cloning PX4:
 Clone the branch `MK` from `Mu99-M/PX4-Autopilot` in home directory.
 ```
 cd ~
 git clone -b MK https://github.com/Mu99-M/PX4-Autopilot.git --recursive
 ```
-### Install gstreamer for SITL
+### Install gstreamer for SITL:
 ```
 sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
 ```
-### Update (common.xml) & (iris.sdf.jinja)
-Unfortently, I wasn't able to push these 2 file for some reaseon, so they have to be updated manually.
-Firt, build px4. It will show an error and it won't continue, but it's ok for now.
+### Update (common.xml) & (iris.sdf.jinja):
+Unfortunately, I wasn't able to push these 2 files for some reason, so they have to be updated manually. First, build px4. It will show an error and it won't continue, but it's ok for now.
+
 ```
 cd ~/PX4-Autopilot
 make px4_sitl gazebo
 ```
+
 1. common.xml
 
 Download the file from DroneLeaf onedrive [here](https://droneleaf.sharepoint.com/:u:/s/technical/ET_WUqM3u3xOqpPJwsCv1UwBCr1k-d1219Qgi8GG4Kp_vg?e=UNfQKu).
