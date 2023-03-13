@@ -46,6 +46,18 @@ cp ./common.xml ~/PX4-Autopilot/src/modules/mavlink/mavlink/message_definitions/
 ### 2. iris.sdf.jinja
 Open the file `~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/iris/iris.sdf.jinja`. Search for `</enable_lockstep>` and change its value from `1` to `0`.
 
+## Building PX4
+Now you can build PX4 again for SITL without any problem. The final result of the following command should open gazebo with the drone in it.
+```
+cd ~/PX4-Autopilot
+make px4_sitl gazebo
+```
+To build for Pixhawk 4 (FMUv5):
+```
+cd ~/PX4-Autopilot
+make px4_fmu-v5_default
+```
+For any other version check [this link](https://docs.px4.io/main/en/dev_setup/building_px4.html#building-for-nuttx).
 # ROS Noetic
 Refernce for ROS installation: [ROS Installation](http://wiki.ros.org/noetic/Installation/Ubuntu)
 
@@ -124,6 +136,50 @@ Make sure that you use setup.bash from workspace. Else rosrun can't find nodes f
 source devel/setup.bash
 ```
 # offb Node
+This node has 3 jobs.
+1. Switch to offboard mode and checks if it's disconnected to try switching again.
+2. Arm the vehicle and checks if it's disarmed to try arming again.
+3. Publishing values to `ActuatorMotors` topic.
 
-# Install QGroundControl (QGC)
+## Installing
+```
+cd ~/catkin_ws/src/
+git clone -b master https://github.com/Mu99-M/offb.git --recursive
+catkin build
+```
+Now everthing is ready to be used.
 
+# How To Use in SITL
+Run in the terminal:
+```
+make px4_sitl gazebo
+```
+
+In another terminal run:
+```
+roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
+```
+Now run the `offb` node in another terminal.
+```
+rosrun offb offb_node
+```
+
+# QGroundControl (QGC)
+## Deps Before Installing
+```
+sudo usermod -a -G dialout $USER
+sudo apt-get remove modemmanager -y
+sudo apt install gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl -y
+sudo apt install libqt5gui5 -y
+sudo apt install libfuse2 -y
+```
+After that you should sign out and sign in again to enable the change to user permissions. Please save any unsaved work.
+
+## To install QGroundControl:
+1. Download [QGroundControl.AppImage](https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl.AppImage).
+2. Install (and run) using the terminal commands:
+```
+chmod +x ./QGroundControl.AppImage
+./QGroundControl.AppImage  # (or double click)
+
+```
