@@ -1,4 +1,4 @@
-### These instructions are used for Ubunutu 20.04. They could be used in WSL2 or dual boot. But it's highly recommended to be used as a dual boot.
+### These instructions are used for Ubuntu 20.04. They could be used in WSL2 or dual boot. But it's highly recommended to be used as a dual boot.
 
 # PX4 Firmware
 ## Checks
