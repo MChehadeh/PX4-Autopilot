@@ -1,4 +1,4 @@
-### These instructions are used for Ubuntu 20.04. They could be used in WSL2 or dual boot. But it's highly recommended to be used as a dual boot.
+### These instructions are used for Ubuntu 20.04. They could be used in WSL2 or as a dual boot. But it's highly recommended to be used as a dual boot.
 
 # PX4 Firmware
 ## Checks
@@ -29,7 +29,23 @@ git clone -b MK https://github.com/Mu99-M/PX4-Autopilot.git --recursive
 ```
 sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
 ```
-## Update common.xml
+## Update (common.xml) & (iris.sdf.jinja)
+Unfortently, I wasn't able to push these 2 file for some reaseon, so they have to be updated manually.
+Firt, build px4. It will show an error and it won't continue, but it's ok for now.
+```
+cd ~/PX4-Autopilot
+make px4_sitl gazebo
+```
+### 1. common.xml
+Download the file from DroneLeaf onedrive [here](https://droneleaf.sharepoint.com/:u:/s/technical/ET_WUqM3u3xOqpPJwsCv1UwBCr1k-d1219Qgi8GG4Kp_vg?e=UNfQKu).
+
+Then, copy the downloaded file to this path `~/PX4-Autopilot/src/modules/mavlink/mavlink/message_definitions/v1.0/`. Or run the following command in the downloaded file path.
+```
+cp ./common.xml ~/PX4-Autopilot/src/modules/mavlink/mavlink/message_definitions/v1.0/
+```
+### 2. iris.sdf.jinja
+Open the file `~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/iris/iris.sdf.jinja`. Search for `</enable_lockstep>` and change its value from `1` to `0`.
+
 # ROS Noetic
 Refernce for ROS installation: [ROS Installation](http://wiki.ros.org/noetic/Installation/Ubuntu)
 
