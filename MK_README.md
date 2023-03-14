@@ -33,6 +33,7 @@ sudo apt install ros-noetic-desktop-full -y
 ### Environment setup:
 ```
 echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 ### Dependencies for building packages:
