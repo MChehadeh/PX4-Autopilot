@@ -1,6 +1,8 @@
 ### These instructions are used for Ubuntu 20.04. They could be used in WSL2 or as a dual boot. But it's highly recommended to be used as a dual boot.
 
-# PX4 Firmware
+# ROS Noetic
+Refernce for ROS installation: [ROS Installation](http://wiki.ros.org/noetic/Installation/Ubuntu)
+
 ### Checks:
 Check any updates before cloning.
 
@@ -9,61 +11,6 @@ sudo apt-get update -y
 sudo apt-get upgrade -y
 sudo apt install git -y
 ```
-### Deps Before Cloning:
-These installations solved all of the errors I faced.
-```
-sudo apt install python3-pip -y
-pip3 install kconfiglib
-sudo apt install gcc-arm-none-eabi -y
-pip3 install --user jinja2
-pip3 install --user jsonschema
-```
-
-### Cloning PX4:
-Clone the branch `MK` from `Mu99-M/PX4-Autopilot` in home directory.
-```
-cd ~
-git clone -b MK https://github.com/Mu99-M/PX4-Autopilot.git --recursive
-```
-### Install gstreamer for SITL:
-```
-sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
-```
-### Update (common.xml) & (iris.sdf.jinja):
-Unfortunately, I wasn't able to push these 2 files for some reason, so they have to be updated manually. First, build px4. It will show an error and it won't continue, but it's ok for now.
-
-```
-cd ~/PX4-Autopilot
-make px4_sitl gazebo
-```
-
-1. common.xml
-
-Download the file from DroneLeaf onedrive [here](https://droneleaf.sharepoint.com/:u:/s/technical/ET_WUqM3u3xOqpPJwsCv1UwBCr1k-d1219Qgi8GG4Kp_vg?e=UNfQKu).
-
-Then, copy the downloaded file to this path `~/PX4-Autopilot/src/modules/mavlink/mavlink/message_definitions/v1.0/`. Or run the following command in the downloaded file path.
-```
-cp ./common.xml ~/PX4-Autopilot/src/modules/mavlink/mavlink/message_definitions/v1.0/
-```
-2. iris.sdf.jinja
-
-Open the file `~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/iris/iris.sdf.jinja`. Search for `</enable_lockstep>` and change its value from `1` to `0`.
-
-### Building PX4:
-Now you can build PX4 again for SITL without any problem. The final result of the following command should open gazebo with the drone in it.
-```
-cd ~/PX4-Autopilot
-make px4_sitl gazebo
-```
-To build for Pixhawk 4 (FMUv5):
-```
-cd ~/PX4-Autopilot
-make px4_fmu-v5_default
-```
-For any other version check [this link](https://docs.px4.io/main/en/dev_setup/building_px4.html#building-for-nuttx).
-# ROS Noetic
-Refernce for ROS installation: [ROS Installation](http://wiki.ros.org/noetic/Installation/Ubuntu)
-
 ### Setup your sources.list:
 ```
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -163,6 +110,60 @@ git checkout MK_MAVLINK
 cd ~/catkin_ws
 catkin build
 ```
+
+# PX4 Firmware
+### Deps Before Cloning:
+These installations solved all of the errors I faced.
+```
+sudo apt install python3-pip -y
+pip3 install kconfiglib
+sudo apt install gcc-arm-none-eabi -y
+pip3 install --user jinja2
+pip3 install --user jsonschema
+```
+
+### Cloning PX4:
+Clone the branch `MK` from `Mu99-M/PX4-Autopilot` in home directory.
+```
+cd ~
+git clone -b MK https://github.com/Mu99-M/PX4-Autopilot.git --recursive
+```
+### Install gstreamer for SITL:
+```
+sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
+```
+### Update (common.xml) & (iris.sdf.jinja):
+Unfortunately, I wasn't able to push these 2 files for some reason, so they have to be updated manually. First, build px4. It will show an error and it won't continue, but it's ok for now.
+
+```
+cd ~/PX4-Autopilot
+make px4_sitl gazebo
+```
+
+1. common.xml
+
+Download the file from DroneLeaf onedrive [here](https://droneleaf.sharepoint.com/:u:/s/technical/ET_WUqM3u3xOqpPJwsCv1UwBCr1k-d1219Qgi8GG4Kp_vg?e=UNfQKu).
+
+Then, copy the downloaded file to this path `~/PX4-Autopilot/src/modules/mavlink/mavlink/message_definitions/v1.0/`. Or run the following command in the downloaded file path.
+```
+cp ./common.xml ~/PX4-Autopilot/src/modules/mavlink/mavlink/message_definitions/v1.0/
+```
+2. iris.sdf.jinja
+
+Open the file `~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/iris/iris.sdf.jinja`. Search for `</enable_lockstep>` and change its value from `1` to `0`.
+
+### Building PX4:
+Now you can build PX4 again for SITL without any problem. The final result of the following command should open gazebo with the drone in it.
+```
+cd ~/PX4-Autopilot
+make px4_sitl gazebo
+```
+To build for Pixhawk 4 (FMUv5):
+```
+cd ~/PX4-Autopilot
+make px4_fmu-v5_default
+```
+For any other version check [this link](https://docs.px4.io/main/en/dev_setup/building_px4.html#building-for-nuttx).
 
 # offb Node
 This node has 3 jobs.
