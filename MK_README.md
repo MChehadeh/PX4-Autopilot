@@ -4,7 +4,7 @@
 Refernce for ROS installation: [ROS Installation](http://wiki.ros.org/noetic/Installation/Ubuntu)
 
 ### Checks:
-Check any updates before cloning.
+Check for any updates.
 
 ```
 sudo apt-get update -y
