@@ -215,3 +215,55 @@ After that you should sign out and sign in again to enable the change to user pe
 chmod +x ./QGroundControl.AppImage
 ./QGroundControl.AppImage  # (or double click)
 ```
+# Change Frequency for a Topic
+We are interested in 3 topics for now (`VEHICLE_ANGULAR_VELOCITY`, `VEHICLE_ATTITUDE`, and `VEHICLE_LOCAL_POSITION`).
+
+## 1. Change the Publishing Rate in the Mavlink
+First, run `uorb top -1` in the Mavlink shell to check the publishing rate of each topic. Each topic of the three mentioned above should be **at least** 200 Hz.
+
+To change the rate of `VEHICLE_ATTITUDE` and `VEHICLE_LOCAL_POSITION`:
+
+1. Set the parameter `IMU_INTEG_RATE` to be 400 Hz.
+2. Set the parameter `EKF2_PREDICT_US` to be 2500.
+
+Note: The parameter `IMU_INTEG_RATE` is to change the rate of the `VEHICLE_ATTITUDE` topic.
+
+Note: The `EKF2_PREDICT_US` is to change the rate of the `VEHICLE_LOCAL_POSITION` topic, however, the topic rate will be limited to the `IMU_INTEG_RATE` parameter value.
+
+Run `uorb top -1` in the Mavlink shell to re-check the publishing rate of the topics after applying the changes.
+
+## 2. Change the Publishing Rate in MAVLINK_MODE_CUSTOM
+
+1. Open `~/PX4-Autopilot/src/modules/mavlink/mavlink_main.cpp`
+
+2. Change the three lines of the topics to be:
+```
+configure_stream_local("VEHICLE_LOCAL_POSITION", 200.0f);
+configure_stream_local("VEHICLE_ATTITUDE", 200.0f);
+configure_stream_local("VEHICLE_ANGULAR_VELOCITY", 200.0f);
+```
+3. Save, build, and upload to the pixhawk 6c. To [build](https://docs.px4.io/main/en/flight_controller/pixhawk6c.html#building-firmware) PX4 for pixhawk 6c:
+
+```
+make px4_fmu-v6c_default
+```
+
+## 3. Check the Topics Frequency in Mavros
+1. Close QGroundControl if open.
+2. Unplug and re-plug the pixhawk.
+3. run:
+```
+roslaunch mavros px4.launch
+```
+4. Then run each topic in a separate terminal:
+```
+rostopic hz /mavros/vehicle_angular_velocity/vehicle_angular_velocity
+rostopic hz /mavros/vehicle_attitude/vehicle_attitude
+rostopic hz /mavros/vehicle_local_position/vehicle_local_position
+```
+The output should be like this:
+```
+average rate: 200.00
+        min: 0.002s max: 0.019s std dev: 0.00572s window: 100
+```
+If the rate is successfully 200 Hz, please start from step 2 again but with 400.0f Hz.
