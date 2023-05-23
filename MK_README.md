@@ -232,7 +232,7 @@ Note: The `EKF2_PREDICT_US` is to change the rate of the `VEHICLE_LOCAL_POSITION
 
 Run `uorb top -1` in the Mavlink shell to re-check the publishing rate of the topics after applying the changes.
 
-## 2. Change the Publishing Rate in MAVLINK_MODE_CUSTOM
+## 2. Change the Stream Rate in MAVLINK_MODE_CUSTOM
 
 1. Open `~/PX4-Autopilot/src/modules/mavlink/mavlink_main.cpp`
 
