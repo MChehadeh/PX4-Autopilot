@@ -247,7 +247,6 @@ configure_stream_local("VEHICLE_ANGULAR_VELOCITY", 200.0f);
 ```
 cd ~/PX4-Autopilot/
 make px4_fmu-v6c_default upload
-
 ```
 
 ## 3. Check the Topics Frequency in Mavros
