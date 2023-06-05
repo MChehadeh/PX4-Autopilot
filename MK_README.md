@@ -248,7 +248,15 @@ configure_stream_local("VEHICLE_ANGULAR_VELOCITY", 200.0f);
 cd ~/PX4-Autopilot/
 make px4_fmu-v6c_default upload
 ```
+A successful run will end with this output:
+```
+Erase  : [====================] 100.0%
+Program: [====================] 100.0%
+Verify : [====================] 100.0%
+Rebooting.
 
+[100%] Built target upload
+```
 ## 3. Check the Topics Frequency in Mavros
 1. Close QGroundControl if open.
 2. Unplug and re-plug the pixhawk.
