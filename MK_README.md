@@ -245,7 +245,8 @@ configure_stream_local("VEHICLE_ANGULAR_VELOCITY", 200.0f);
 3. Save, build, and upload to the pixhawk 6c. To [build](https://docs.px4.io/main/en/flight_controller/pixhawk6c.html#building-firmware) PX4 for pixhawk 6c:
 
 ```
-make px4_fmu-v6c_default
+cd ~/PX4-Autopilot/
+make px4_fmu-v6c_default upload
 ```
 
 ## 3. Check the Topics Frequency in Mavros
