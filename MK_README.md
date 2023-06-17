@@ -246,7 +246,7 @@ configure_stream_local("VEHICLE_ANGULAR_VELOCITY", 200.0f);
 
 ```
 cd ~/PX4-Autopilot/
-make px4_fmu-v6c_default upload
+make px4_fmu-v6x_default upload
 ```
 A successful run will end with this output:
 ```
