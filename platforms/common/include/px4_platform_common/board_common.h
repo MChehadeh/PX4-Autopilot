@@ -340,6 +340,7 @@ typedef enum PX4_SOC_ARCH_ID_t {
 	PX4_SOC_ARCH_ID_STM32H7        =  0x0006,
 
 	PX4_SOC_ARCH_ID_NXPS32K146     =  0x0007,
+	PX4_SOC_ARCH_ID_NXPS32K344     =  0x0008,
 
 	PX4_SOC_ARCH_ID_EAGLE          =  0x1001,
 	PX4_SOC_ARCH_ID_QURT           =  0x1002,
@@ -349,6 +350,8 @@ typedef enum PX4_SOC_ARCH_ID_t {
 	PX4_SOC_ARCH_ID_SITL           =  0x1006,
 
 	PX4_SOC_ARCH_ID_BBBLUE         =  0x1008,
+
+	PX4_SOC_ARCH_ID_VOXL2          =  0x100A,
 
 } PX4_SOC_ARCH_ID_t;
 
@@ -509,18 +512,7 @@ static inline bool board_rc_invert_input(const char *device, bool invert) { retu
  *
  ************************************************************************************/
 
-#if defined(__PX4_NUTTX) && !defined(CONFIG_BUILD_FLAT)
-inline static int board_read_VBUS_state(void)
-{
-	platformiocvbusstate_t state = {false};
-	boardctl(PLATFORMIOCVBUSSTATE, (uintptr_t)&state);
-	return state.ret;
-}
-#elif defined(GPIO_OTGFS_VBUS)
-#  define board_read_VBUS_state() (px4_arch_gpioread(GPIO_OTGFS_VBUS) ? 0 : 1)
-#else
 int board_read_VBUS_state(void);
-#endif
 
 /************************************************************************************
  * Name: board_on_reset
@@ -957,7 +949,7 @@ int board_get_mfguid_formated(char *format_buffer, int size); // DEPRICATED use 
 int board_get_px4_guid(px4_guid_t guid);
 
 /************************************************************************************
- * Name: board_get_mfguid_formated
+ * Name: board_get_px4_guid_formated
  *
  * Description:
  *   All boards either provide a way to retrieve a formatted string of the

@@ -45,7 +45,7 @@
 #include <uORB/Publication.hpp>
 #include <uORB/Subscription.hpp>
 #include <uORB/SubscriptionCallback.hpp>
-#include <uORB/topics/orb_test.h>
+#include <uORB/topics/orb_test_float.h>
 #include <uORB/topics/parameter_update.h>
 #include <uORB/topics/sensor_accel.h>
 #include <uORB/topics/vehicle_status.h>
@@ -75,7 +75,7 @@ private:
 	void Run() override;
 
 	// Publications
-	uORB::Publication<orb_test_s> _orb_test_pub{ORB_ID(orb_test)};
+	uORB::Publication<orb_test_float_s> _orb_test_float_pub{ORB_ID(orb_test_float)};
 
 	// Subscriptions
 	uORB::SubscriptionCallbackWorkItem _sensor_accel_sub{this, ORB_ID(sensor_accel)};        // subscription that schedules WorkItemExample when updated
@@ -88,8 +88,11 @@ private:
 
 	// Parameters
 	DEFINE_PARAMETERS(
-		(ParamInt<px4::params::SYS_AUTOSTART>) _param_sys_autostart,   /**< example parameter */
-		(ParamInt<px4::params::SYS_AUTOCONFIG>) _param_sys_autoconfig  /**< another parameter */
+		// (ParamInt<px4::params::SYS_AUTOSTART>) _param_sys_autostart,   /**< example parameter */
+		// (ParamInt<px4::params::SYS_AUTOCONFIG>) _param_sys_autoconfig,  /**< another parameter */
+
+		(ParamFloat<px4::params::ZZ_MK>) _ZZ_MK,   /**< example parameter */
+		(ParamFloat<px4::params::ZZ_MK_CHECK>) _ZZ_MK_CHECK   /**< example parameter */
 	)
 
 

@@ -228,7 +228,8 @@ void RTL::find_RTL_destination()
 		}
 	}
 
-	if (_navigator->get_vstatus()->vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+	if (_param_rtl_cone_half_angle_deg.get() > 0
+	    && _navigator->get_vstatus()->vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
 		_rtl_alt = calculate_return_alt_from_cone_half_angle((float)_param_rtl_cone_half_angle_deg.get());
 
 	} else {
@@ -265,8 +266,6 @@ void RTL::on_activation()
 
 	const vehicle_global_position_s &global_position = *_navigator->get_global_position();
 
-	_rtl_loiter_rad = _param_rtl_loiter_rad.get();
-
 	if (_navigator->get_land_detected()->landed) {
 		// For safety reasons don't go into RTL if landed.
 		_rtl_state = RTL_STATE_LANDED;
@@ -298,7 +297,7 @@ void RTL::on_activation()
 
 void RTL::on_active()
 {
-	if (_rtl_state != RTL_STATE_LANDED && is_mission_item_reached()) {
+	if (_rtl_state != RTL_STATE_LANDED && is_mission_item_reached_or_completed()) {
 		advance_rtl();
 		set_rtl_item();
 	}
@@ -328,19 +327,16 @@ void RTL::set_rtl_item()
 	const float destination_dist = get_distance_to_next_waypoint(_destination.lat, _destination.lon, gpos.lat, gpos.lon);
 	const float loiter_altitude = math::min(_destination.alt + _param_rtl_descend_alt.get(), _rtl_alt);
 
+	// if we will switch to mission for landing, already set the loiter radius (incl. direction) from mission
+	const float landing_loiter_radius = _destination.type == RTL_DESTINATION_MISSION_LANDING ?
+					    _navigator->get_mission_landing_loiter_radius() : _param_rtl_loiter_rad.get();
+
 	const RTLHeadingMode rtl_heading_mode = static_cast<RTLHeadingMode>(_param_rtl_hdg_md.get());
 
 	switch (_rtl_state) {
 	case RTL_STATE_CLIMB: {
 
-			// do not use LOITER_TO_ALT for rotary wing mode as it would then always climb to at least MIS_LTRMIN_ALT,
-			// even if current climb altitude is below (e.g. RTL immediately after take off)
-			if (_navigator->get_vstatus()->vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-				_mission_item.nav_cmd = NAV_CMD_WAYPOINT;
-
-			} else {
-				_mission_item.nav_cmd = NAV_CMD_LOITER_TO_ALT;
-			}
+			_mission_item.nav_cmd = NAV_CMD_LOITER_TO_ALT;
 
 			_mission_item.lat = gpos.lat;
 			_mission_item.lon = gpos.lon;
@@ -369,11 +365,20 @@ void RTL::set_rtl_item()
 		}
 
 	case RTL_STATE_RETURN: {
-			// Don't change altitude.
-			_mission_item.nav_cmd = NAV_CMD_WAYPOINT;
+
+			// For FW flight:set to LOITER_TIME (with 0s loiter time), such that the loiter (orbit) status
+			// can be displayed on groundstation and the WP is accepted once within loiter radius
+			if (_navigator->get_vstatus()->vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+				_mission_item.nav_cmd = NAV_CMD_LOITER_TIME_LIMIT;
+
+
+			} else {
+				_mission_item.nav_cmd = NAV_CMD_WAYPOINT;
+			}
+
 			_mission_item.lat = _destination.lat;
 			_mission_item.lon = _destination.lon;
-			_mission_item.altitude = _rtl_alt;
+			_mission_item.altitude = _rtl_alt; // Don't change altitude
 			_mission_item.altitude_is_relative = false;
 
 			if (rtl_heading_mode == RTLHeadingMode::RTL_NAVIGATION_HEADING &&
@@ -393,6 +398,7 @@ void RTL::set_rtl_item()
 			_mission_item.time_inside = 0.0f;
 			_mission_item.autocontinue = true;
 			_mission_item.origin = ORIGIN_ONBOARD;
+			_mission_item.loiter_radius = landing_loiter_radius;
 
 			mavlink_log_info(_navigator->get_mavlink_log_pub(), "RTL: return at %d m (%d m above destination)\t",
 					 (int)ceilf(_mission_item.altitude), (int)ceilf(_mission_item.altitude - _destination.alt));
@@ -423,15 +429,11 @@ void RTL::set_rtl_item()
 				_mission_item.yaw = _destination.yaw;
 			}
 
-			if (_navigator->get_vstatus()->is_vtol
-			    || _navigator->get_vstatus()->vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-				_mission_item.loiter_radius = _rtl_loiter_rad;
-			}
-
 			_mission_item.acceptance_radius = _navigator->get_acceptance_radius();
 			_mission_item.time_inside = 0.0f;
 			_mission_item.autocontinue = true;
 			_mission_item.origin = ORIGIN_ONBOARD;
+			_mission_item.loiter_radius = landing_loiter_radius;
 
 			// Disable previous setpoint to prevent drift.
 			pos_sp_triplet->previous.valid = false;
@@ -471,11 +473,11 @@ void RTL::set_rtl_item()
 				_mission_item.yaw = _destination.yaw;
 			}
 
-			_mission_item.loiter_radius = _navigator->get_loiter_radius();
 			_mission_item.acceptance_radius = _navigator->get_acceptance_radius();
 			_mission_item.time_inside = max(_param_rtl_land_delay.get(), 0.0f);
 			_mission_item.autocontinue = autocontinue;
 			_mission_item.origin = ORIGIN_ONBOARD;
+			_mission_item.loiter_radius = landing_loiter_radius;
 
 			_navigator->set_can_loiter_at_sp(true);
 
@@ -499,6 +501,9 @@ void RTL::set_rtl_item()
 				_mission_item.yaw = _navigator->get_local_position()->heading;
 			}
 
+			_mission_item.vtol_back_transition = true;
+			// acceptance_radius will be overwritten since vtol_back_transition is set,
+			// set as a default value only
 			_mission_item.acceptance_radius = _navigator->get_acceptance_radius();
 			_mission_item.time_inside = 0.0f;
 			_mission_item.autocontinue = true;
@@ -611,13 +616,7 @@ void RTL::advance_rtl()
 		break;
 
 	case RTL_STATE_RETURN:
-		if (vtol_in_fw_mode || descend_and_loiter) {
-			_rtl_state = RTL_STATE_DESCEND;
-
-		} else {
-			_rtl_state = RTL_STATE_LAND;
-		}
-
+		_rtl_state = RTL_STATE_DESCEND;
 		break;
 
 	case RTL_STATE_DESCEND:
@@ -637,13 +636,12 @@ void RTL::advance_rtl()
 	case RTL_STATE_LOITER:
 
 		if (vtol_in_fw_mode) {
-			_rtl_state = RTL_STATE_TRANSITION_TO_MC;
+			_rtl_state = RTL_STATE_HEAD_TO_CENTER;
 
 		} else {
 			_rtl_state = RTL_STATE_LAND;
 		}
 
-		_rtl_state = RTL_STATE_LAND;
 		break;
 
 	case RTL_STATE_HEAD_TO_CENTER:
@@ -666,6 +664,7 @@ void RTL::advance_rtl()
 
 	case RTL_STATE_LAND:
 		_rtl_state = RTL_STATE_LANDED;
+		_navigator->mode_completed(vehicle_status_s::NAVIGATION_STATE_AUTO_RTL);
 		break;
 
 	default:
@@ -693,7 +692,7 @@ float RTL::calculate_return_alt_from_cone_half_angle(float cone_half_angle_deg)
 
 	} else {
 
-		if (cone_half_angle_deg > 0.0f && destination_dist <= _param_rtl_min_dist.get()) {
+		if (destination_dist <= _param_rtl_min_dist.get()) {
 
 			// constrain cone half angle to meaningful values. All other cases are already handled above.
 			const float cone_half_angle_rad = radians(constrain(cone_half_angle_deg, 1.0f, 89.0f));

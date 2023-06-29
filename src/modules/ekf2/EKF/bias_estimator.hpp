@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2020-2021 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2020-2022 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -57,28 +57,39 @@ class BiasEstimator
 {
 public:
 	struct status {
-		float bias;
-		float bias_var;
-		float innov;
-		float innov_var;
-		float innov_test_ratio;
+		float bias{0.f};
+		float bias_var{0.f};
+		float innov{0.f};
+		float innov_var{0.f};
+		float innov_test_ratio{INFINITY};
 	};
 
-	BiasEstimator() = default;
-	~BiasEstimator() = default;
+	BiasEstimator() {}
+	BiasEstimator(float state_init, float state_var_init): _state{state_init}, _state_var{state_var_init} {};
 
-	void predict(float dt);
-	void fuseBias(float measurement, float measurement_var);
+	virtual ~BiasEstimator() = default;
+
+	void reset()
+	{
+		_state = 0.f;
+		_state_var = 0.f;
+		_signed_innov_test_ratio_lpf.reset(0.f);
+		_time_since_last_negative_innov = 0.f;
+		_time_since_last_positive_innov = 0.f;
+	}
+
+	virtual void predict(float dt);
+	virtual void fuseBias(float measurement, float measurement_var);
 
 	void setBias(float bias) { _state = bias; }
-	void setProcessNoiseStdDev(float process_noise)
+	void setProcessNoiseSpectralDensity(float nsd)
 	{
-		_process_var = process_noise * process_noise;
+		_process_psd = nsd * nsd;
 	}
 	void setBiasStdDev(float state_noise) { _state_var = state_noise * state_noise; }
 	void setInnovGate(float gate_size) { _gate_size = gate_size; }
 
-	void setMaxStateNoise(float max_noise) { _state_var_max = max_noise * max_noise; }
+	void setMaxStateNoise(float max_noise) { _state_var_max = math::max(sq(0.01f), max_noise * max_noise); }
 
 	float getBias() const { return _state; }
 	float getBiasVar() const { return _state_var; }
@@ -86,12 +97,11 @@ public:
 
 private:
 	float _state{0.f};
-	float _state_max{100.f};
 	float _dt{0.01f};
 
 	float _gate_size{3.f}; ///< Used for innovation filtering (innovation test ratio)
 	float _state_var{0.1f}; ///< Initial state uncertainty variance (m^2)
-	float _process_var{25.0e-6f}; ///< State process noise variance (m^2/s^2)
+	float _process_psd{1.25e-6f}; ///< State process power spectral density (m^2/s^2/Hz)
 	float _state_var_max{2.f}; ///< Used to constrain the state variance (m^2)
 
 	// Innovation sequence monitoring; used to detect a bias in the state
@@ -99,7 +109,7 @@ private:
 	float _time_since_last_negative_innov{0.f};
 	float _time_since_last_positive_innov{0.f};
 
-	status _status;
+	status _status{};
 
 	void constrainStateVar();
 	float computeKalmanGain(float innov_var) const;

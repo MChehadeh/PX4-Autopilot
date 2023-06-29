@@ -70,12 +70,30 @@ void WorkItemExample::Run()
 	perf_begin(_loop_perf);
 	perf_count(_loop_interval_perf);
 
+	orb_test_float_s data{};
+
 	// Check if parameters have changed
 	if (_parameter_update_sub.updated()) {
 		// clear update
 		parameter_update_s param_update;
 		_parameter_update_sub.copy(&param_update);
 		updateParams(); // update module parameters (in DEFINE_PARAMETERS)
+
+		if (_ZZ_MK.get() < 0.3f) {
+			// do something if SYS_AUTOSTART is 1234
+			data.val = 1;
+			data.timestamp = hrt_absolute_time();
+			_orb_test_float_pub.publish(data);
+			_ZZ_MK_CHECK.commit_no_notification(0.1f);
+		}
+		else if (_ZZ_MK.get() >= 0.3f) {
+			// do something if SYS_AUTOSTART is 1234
+			data.val = 5;
+			data.timestamp = hrt_absolute_time();
+			_orb_test_float_pub.publish(data);
+			_ZZ_MK_CHECK.set(0.5f);
+			_ZZ_MK_CHECK.commit();
+		}
 	}
 
 
@@ -107,21 +125,20 @@ void WorkItemExample::Run()
 
 		if (_sensor_accel_sub.copy(&accel)) {
 			// DO WORK
-
+			// data.val = accel.z + 10;
 			// access parameter value (SYS_AUTOSTART)
+			/*
 			if (_param_sys_autostart.get() == 1234) {
 				// do something if SYS_AUTOSTART is 1234
 			}
+			*/
 		}
 	}
 
 
 	// Example
 	//  publish some data
-	orb_test_s data{};
-	data.val = 314159;
-	data.timestamp = hrt_absolute_time();
-	_orb_test_pub.publish(data);
+
 
 
 	perf_end(_loop_perf);

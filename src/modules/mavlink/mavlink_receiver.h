@@ -33,7 +33,9 @@
 
 /**
  * @file mavlink_receiver.h
- * MAVLink receiver thread
+ *
+ * MAVLink receiver thread that converts the received MAVLink messages to the appropriate
+ * uORB topic publications, to decouple the uORB message and MAVLink message.
  *
  * @author Lorenz Meier <lorenz@px4.io>
  * @author Anton Babushkin <anton@px4.io>
@@ -104,12 +106,14 @@
 #include <uORB/topics/vehicle_global_position.h>
 #include <uORB/topics/vehicle_land_detected.h>
 #include <uORB/topics/vehicle_local_position.h>
-#include <uORB/topics/vehicle_local_position_setpoint.h>
 #include <uORB/topics/vehicle_odometry.h>
 #include <uORB/topics/vehicle_rates_setpoint.h>
 #include <uORB/topics/vehicle_status.h>
 #include <uORB/topics/vehicle_trajectory_bezier.h>
 #include <uORB/topics/vehicle_trajectory_waypoint.h>
+#include <uORB/topics/vehicle_torque_setpoint_mode.h>
+#include <uORB/topics/vehicle_thrust_setpoint_mode.h>
+#include <uORB/topics/actuator_motors.h>
 
 #if !defined(CONSTRAINED_FLASH)
 # include <uORB/topics/debug_array.h>
@@ -202,6 +206,9 @@ private:
 	void handle_message_gimbal_manager_set_manual_control(mavlink_message_t *msg);
 	void handle_message_gimbal_device_information(mavlink_message_t *msg);
 	void handle_message_gimbal_device_attitude_status(mavlink_message_t *msg);
+	void handle_message_vehicle_torque_setpoint_mode(mavlink_message_t *msg);
+	void handle_message_vehicle_thrust_setpoint_mode(mavlink_message_t *msg);
+	void handle_message_actuator_motors(mavlink_message_t *msg);
 
 #if !defined(CONSTRAINED_FLASH)
 	void handle_message_debug(mavlink_message_t *msg);
@@ -254,6 +261,9 @@ private:
 	mavlink_status_t		_status{}; ///< receiver status, used for mavlink_parse_char()
 
 	orb_advert_t _mavlink_log_pub{nullptr};
+	orb_advert_t _vehicle_torque_setpoint_mode_pub{nullptr};
+	orb_advert_t _vehicle_thrust_setpoint_mode_pub{nullptr};
+	orb_advert_t _actuator_motors_pub{nullptr};
 
 	static constexpr unsigned MAX_REMOTE_COMPONENTS{16};
 	struct ComponentState {
@@ -288,7 +298,7 @@ private:
 	uint16_t _mavlink_status_last_packet_rx_drop_count{0};
 
 	// ORB publications
-	uORB::Publication<actuator_controls_s>			_actuator_controls_pubs[4] {ORB_ID(actuator_controls_0), ORB_ID(actuator_controls_1), ORB_ID(actuator_controls_2), ORB_ID(actuator_controls_3)};
+	uORB::Publication<actuator_controls_s>			_actuator_controls_pubs[3] {ORB_ID(actuator_controls_0), ORB_ID(actuator_controls_1), ORB_ID(actuator_controls_2)};
 	uORB::Publication<airspeed_s>				_airspeed_pub{ORB_ID(airspeed)};
 	uORB::Publication<battery_status_s>			_battery_pub{ORB_ID(battery_status)};
 	uORB::Publication<camera_status_s>			_camera_status_pub{ORB_ID(camera_status)};
@@ -351,7 +361,6 @@ private:
 	uORB::Subscription	_vehicle_local_position_sub{ORB_ID(vehicle_local_position)};
 	uORB::Subscription	_vehicle_global_position_sub{ORB_ID(vehicle_global_position)};
 	uORB::Subscription	_vehicle_status_sub{ORB_ID(vehicle_status)};
-	uORB::Subscription 	_actuator_controls_3_sub{ORB_ID(actuator_controls_3)};
 	uORB::Subscription	_autotune_attitude_control_status_sub{ORB_ID(autotune_attitude_control_status)};
 
 	uORB::SubscriptionInterval _parameter_update_sub{ORB_ID(parameter_update), 1_s};
@@ -385,6 +394,7 @@ private:
 	hrt_abstime _heartbeat_type_adsb{0};
 	hrt_abstime _heartbeat_type_camera{0};
 	hrt_abstime _heartbeat_type_parachute{0};
+	hrt_abstime _heartbeat_type_open_drone_id{0};
 
 	hrt_abstime _heartbeat_component_telemetry_radio{0};
 	hrt_abstime _heartbeat_component_log{0};

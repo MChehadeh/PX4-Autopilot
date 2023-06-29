@@ -192,13 +192,11 @@ PARAM_DEFINE_INT32(SYS_HAS_GPS, 1);
 /**
  * Control if the vehicle has a magnetometer
  *
- * Disable this if the board has no magnetometer, such as the Omnibus F4 SD.
- * If disabled, the preflight checks will not check for the presence of a
- * magnetometer.
+ * Set this to 0 if the board has no magnetometer.
+ * If set to 0, the preflight checks will not check for the presence of a
+ * magnetometer, otherwise N sensors are required.
  *
- * @boolean
  * @reboot_required true
- *
  * @group System
  */
 PARAM_DEFINE_INT32(SYS_HAS_MAG, 1);
@@ -280,19 +278,3 @@ PARAM_DEFINE_INT32(SYS_BL_UPDATE, 0);
  * @group System
  */
 PARAM_DEFINE_INT32(SYS_FAILURE_EN, 0);
-
-
-/**
- * Enable Dynamic Control Allocation
- *
- * If disabled, the existing mixing implementation is used.
- * If enabled, dynamic control allocation with runtime configuration of the
- * mixing and output functions is used.
- *
- * Note: this is work-in-progress and not all vehicle types are supported yet.
- *
- * @boolean
- * @reboot_required true
- * @group System
- */
-PARAM_DEFINE_INT32(SYS_CTRL_ALLOC, 0);

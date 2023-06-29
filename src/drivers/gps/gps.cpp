@@ -321,7 +321,7 @@ GPS::GPS(const char *path, gps_driver_mode_t mode, GPSHelper::Interface interfac
 		set_device_bus_type(device::Device::DeviceBusType::DeviceBusType_SERIAL);
 
 		char c = _port[strlen(_port) - 1]; // last digit of path (eg /dev/ttyS2)
-		set_device_bus(atoi(&c));
+		set_device_bus(c - 48); // sub 48 to convert char to integer
 
 	} else if (_interface == GPSHelper::Interface::SPI) {
 		set_device_bus_type(device::Device::DeviceBusType::DeviceBusType_SPI);
@@ -535,11 +535,12 @@ void GPS::handleInjectDataTopic()
 
 	bool updated = false;
 
-	// Limit maximum number of GPS injections to 6 since usually
+	// Limit maximum number of GPS injections to 8 since usually
 	// GPS injections should consist of 1-4 packets (GPS, Glonass, BeiDou, Galileo).
-	// Looking at 6 packets thus guarantees, that at least a full injection
+	// Looking at 8 packets thus guarantees, that at least a full injection
 	// data set is evaluated.
-	const size_t max_num_injections = 6;
+	// Moving Base reuires a higher rate, so we allow up to 8 packets.
+	const size_t max_num_injections = gps_inject_data_s::ORB_QUEUE_LENGTH;
 	size_t num_injections = 0;
 
 	do {
@@ -783,7 +784,18 @@ GPS::run()
 
 		} else if (gps_ubx_mode == 4) {
 			ubx_mode = GPSDriverUBX::UBXMode::MovingBaseUART1;
+
+		} else if (gps_ubx_mode == 5) { // rover with static base on Uart2
+			ubx_mode = GPSDriverUBX::UBXMode::RoverWithStaticBaseUart2;
+
 		}
+	}
+
+	handle = param_find("GPS_UBX_BAUD2");
+	int32_t f9p_uart2_baudrate = 57600;
+
+	if (handle != PARAM_INVALID) {
+		param_get(handle, &f9p_uart2_baudrate);
 	}
 
 	int32_t gnssSystemsParam = static_cast<int32_t>(GPSHelper::GNSSSystemsMask::RECEIVER_DEFAULTS);
@@ -846,7 +858,7 @@ GPS::run()
 		/* FALLTHROUGH */
 		case gps_driver_mode_t::UBX:
 			_helper = new GPSDriverUBX(_interface, &GPS::callback, this, &_report_gps_pos, _p_report_sat_info,
-						   gps_ubx_dynmodel, heading_offset, ubx_mode);
+						   gps_ubx_dynmodel, heading_offset, f9p_uart2_baudrate, ubx_mode);
 			set_device_type(DRV_GPS_DEVTYPE_UBX);
 			break;
 #ifndef CONSTRAINED_FLASH
@@ -891,6 +903,15 @@ GPS::run()
 		} else {
 			gpsConfig.output_mode = GPSHelper::OutputMode::GPS;
 		}
+
+		int32_t gps_ubx_cfg_intf = static_cast<int32_t>(GPSHelper::InterfaceProtocolsMask::ALL_DISABLED);
+		handle = param_find("GPS_UBX_CFG_INTF");
+
+		if (handle != PARAM_INVALID) {
+			param_get(handle, &gps_ubx_cfg_intf);
+		}
+
+		gpsConfig.interface_protocols = static_cast<GPSHelper::InterfaceProtocolsMask>(gps_ubx_cfg_intf);
 
 		if (_helper && _helper->configure(_baudrate, gpsConfig) == 0) {
 

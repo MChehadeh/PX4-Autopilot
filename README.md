@@ -4,14 +4,14 @@
 
 [![Nuttx Targets](https://github.com/PX4/PX4-Autopilot/workflows/Nuttx%20Targets/badge.svg)](https://github.com/PX4/PX4-Autopilot/actions?query=workflow%3A%22Nuttx+Targets%22?branch=master) [![SITL Tests](https://github.com/PX4/PX4-Autopilot/workflows/SITL%20Tests/badge.svg?branch=master)](https://github.com/PX4/PX4-Autopilot/actions?query=workflow%3A%22SITL+Tests%22)
 
-[![Slack](/.github/slack.svg)](https://join.slack.com/t/px4/shared_invite/zt-si4xo5qs-R4baYFmMjlrT4rQK5yUnaA)
+[![Discord Shield](https://discordapp.com/api/guilds/1022170275984457759/widget.png?style=shield)](https://discord.gg/dronecode)
 
 This repository holds the [PX4](http://px4.io) flight control solution for drones, with the main applications located in the [src/modules](https://github.com/PX4/PX4-Autopilot/tree/main/src/modules) directory. It also contains the PX4 Drone Middleware Platform, which provides drivers and middleware to run drones.
 
 PX4 is highly portable, OS-independent and supports Linux, NuttX and MacOS out of the box.
 
-* Official Website: http://px4.io (License: BSD 3-clause, [LICENSE](https://github.com/PX4/PX4-Autopilot/blob/master/LICENSE))
-* [Supported airframes](https://docs.px4.io/main/en/airframes/airframe_reference.html) ([portfolio](http://px4.io/#airframes)):
+* Official Website: http://px4.io (License: BSD 3-clause, [LICENSE](https://github.com/PX4/PX4-Autopilot/blob/main/LICENSE))
+* [Supported airframes](https://docs.px4.io/main/en/airframes/airframe_reference.html) ([portfolio](https://px4.io/ecosystem/commercial-systems/)):
   * [Multicopters](https://docs.px4.io/main/en/frames_multicopter/)
   * [Fixed wing](https://docs.px4.io/main/en/frames_plane/)
   * [VTOL](https://docs.px4.io/main/en/frames_vtol/)
@@ -75,7 +75,7 @@ The PX4 Dev Team syncs up on a [weekly dev call](https://docs.px4.io/main/en/con
     * [Paul Riseborough](https://github.com/priseborough)
   * Vision based navigation and Obstacle Avoidance
     * [Markus Achtelik](https://github.com/markusachtelik)
-  * RTPS/ROS2 Interface
+  * DDS/ROS2 Interface
     * [Nuno Marques](https://github.com/TSC21)
 
 See also [maintainers list](https://px4.io/community/maintainers/) (px4.io) and the [contributors list](https://github.com/PX4/PX4-Autopilot/graphs/contributors) (Github).

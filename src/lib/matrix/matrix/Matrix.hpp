@@ -583,7 +583,7 @@ public:
 
 	bool isAllNan() const
 	{
-		const Matrix<float, M, N> &self = *this;
+		const Matrix<Type, M, N> &self = *this;
 		bool result = true;
 
 		for (size_t i = 0; i < M; i++) {
@@ -593,6 +593,21 @@ public:
 		}
 
 		return result;
+	}
+
+	bool isAllFinite() const
+	{
+		const Matrix<Type, M, N> &self = *this;
+
+		for (size_t i = 0; i < M; i++) {
+			for (size_t j = 0; j < N; j++) {
+				if (!std::isfinite(self(i, j))) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 };
 
