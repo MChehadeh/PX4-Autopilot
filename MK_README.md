@@ -215,6 +215,18 @@ After that you should sign out and sign in again to enable the change to user pe
 chmod +x ./QGroundControl.AppImage
 ./QGroundControl.AppImage  # (or double click)
 ```
+# Configuring the MAVLink Instance
+
+1. Choose the MAVLink instance to work on `MAV_x_CONFIG`, where `x` is the instance number.
+2. In QGroundControl, search for the `MAV_x_CONFIG` parameter.
+3. Set the value of the `MAV_x_CONFIG` parameter to the port you are using (e.g., `TELEM 1`).
+4. Reboot the vehicle and relaunch QGroundControl.
+5. Set the value of the `MAV_x_MODE` parameter to `Custom`.
+6. Set the value of the `MAV_x_RATE` parameter to `2000000` B/s.
+7. Reboot the vehicle.
+
+After completing these steps, your MAVLink instance should be configured and ready to use.
+
 # Change Frequency for a Topic
 We are interested in 3 topics for now (`VEHICLE_ANGULAR_VELOCITY`, `VEHICLE_ATTITUDE`, and `VEHICLE_LOCAL_POSITION`).
 
@@ -242,7 +254,7 @@ configure_stream_local("VEHICLE_LOCAL_POSITION", 200.0f);
 configure_stream_local("VEHICLE_ATTITUDE", 200.0f);
 configure_stream_local("VEHICLE_ANGULAR_VELOCITY", 200.0f);
 ```
-3. Save, build, and upload to the pixhawk 6c. To [build](https://docs.px4.io/main/en/flight_controller/pixhawk6c.html#building-firmware) PX4 for pixhawk 6c:
+3. Save, build, and upload to the pixhawk 6x. To [build](https://docs.px4.io/main/en/flight_controller/pixhawk6c.html#building-firmware) PX4 for pixhawk 6c:
 
 ```
 cd ~/PX4-Autopilot/
