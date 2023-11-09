@@ -134,10 +134,10 @@ pip3 install --user jsonschema
 ```
 
 #### Cloning PX4:
-Clone the branch `MK` from `Mu99-M/PX4-Autopilot` in home directory.
+Clone `Mu99-M/PX4-Autopilot` in home directory.
 ```bash
 cd ~
-git clone -b MK https://github.com/Mu99-M/PX4-Autopilot.git --recursive
+git clone https://github.com/Mu99-M/PX4-Autopilot.git --recursive
 ```
 #### Install gstreamer for SITL:
 ```bash
@@ -295,18 +295,18 @@ If the rate is successfully 200 Hz, please start from step 2 again but with 400.
 
 
 # How To Use in SITL
-### Run in the terminal:
+1. Start sitl gazebo
 ```bash
 cd ~/PX4-Autopilot/
 make px4_sitl gazebo
 ```
 
-### Initialize mavros in another terminal:
+2. Initialize mavros
 ```bash
 roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
 ```
-### Now run the `offb` node in another terminal:
+3. Launch the starting node
 ```bash
-rosrun offb offb_node
+roslaunch offb starting.launch
 ```
 
