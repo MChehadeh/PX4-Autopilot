@@ -10,26 +10,24 @@ This node has 3 jobs.
 2. Arm the vehicle and checks if it's disarmed to try arming again.
 3. Publishing values to `ActuatorMotors` topic.
 
-
 ## Offboard and Mavros Installation
 - Install Deps
 
-        ```bash
-        sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
-        ```
+```bash
+sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
+```
 
 - Create a workspace.
 
-        ```bash
-        mkdir -p ~/catkin_ws/src
-        cd ~/catkin_ws/src
-        git clone https://github.com/Mu99-M/offboard_testing.git --recursive
-        cd ..
-        catkin build
-        source devel/setup.bash
-        ```
-
-This should install mavros, mavlink, and offb packages.
+```bash
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+git clone https://github.com/Mu99-M/offboard_testing.git --recursive
+cd ..
+catkin build
+source devel/setup.bash
+```
+Now everthing is ready to be used from companion computer side.
 
 <!--
 ### Install MAVLink:
@@ -82,8 +80,6 @@ git checkout MK_MAVLINK
 cd ~/catkin_ws
 catkin build
 ```
--->
-
 
 ### Installing:
 ```bash
@@ -93,6 +89,7 @@ cd ~/catkin_ws
 catkin build
 ```
 Now everthing is ready to be used from companion computer side.
+-->
 
 
 # QGroundControl (QGC)
