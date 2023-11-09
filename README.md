@@ -10,7 +10,6 @@ This node has 3 jobs.
 2. Arm the vehicle and checks if it's disarmed to try arming again.
 3. Publishing values to `ActuatorMotors` topic.
 
-
 ## Offboard and Mavros Installation
 - Install Deps
 
@@ -28,8 +27,7 @@ cd ..
 catkin build
 source devel/setup.bash
 ```
-
-This should install mavros, mavlink, and offb packages.
+Now everthing is ready to be used from companion computer side.
 
 <!--
 ### Install MAVLink:
@@ -82,8 +80,6 @@ git checkout MK_MAVLINK
 cd ~/catkin_ws
 catkin build
 ```
--->
-
 
 ### Installing:
 ```bash
@@ -93,6 +89,7 @@ cd ~/catkin_ws
 catkin build
 ```
 Now everthing is ready to be used from companion computer side.
+-->
 
 
 # QGroundControl (QGC)
