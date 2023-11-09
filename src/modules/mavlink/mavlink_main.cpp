@@ -1700,7 +1700,7 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 		//stream nothing
 		configure_stream_local("TIMESYNC", 10.0f);
 		configure_stream_local("LOCAL_POSITION_NED", 400.0f);
-		configure_stream_local("VEHICLE_LOCAL_POSITION", 200.0f);
+		configure_stream_local("VEHICLE_LOCAL_POSITION", 400.0f);
 		configure_stream_local("VEHICLE_ATTITUDE", 400.0f);
 		configure_stream_local("VEHICLE_ANGULAR_VELOCITY", 400.0f);
 		configure_stream_local("VEHICLE_STATUS",2.0f);
