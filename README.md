@@ -1,130 +1,315 @@
-# PX4 Drone Autopilot
+### These instructions are used for Ubuntu 20.04. They could be used in WSL2 or as a dual boot. But it's highly recommended to be used as a dual boot.
 
-[![Releases](https://img.shields.io/github/release/PX4/PX4-Autopilot.svg)](https://github.com/PX4/PX4-Autopilot/releases) [![DOI](https://zenodo.org/badge/22634/PX4/PX4-Autopilot.svg)](https://zenodo.org/badge/latestdoi/22634/PX4/PX4-Autopilot)
+# Setup of Companion Computer / PC
+## Mavros
+This is Mavros Source Installion. Refernces ([PX4 docs here](https://docs.px4.io/main/en/ros/mavros_installation.html#source-installation) and [Mavros repo on Github here](https://github.com/mavlink/mavros/tree/master/mavros#source-installation)). Note that they're using ROS Kinetic in the refernces and we are using ROS Noetic. The next instructions work for ROS Noetic.
 
-[![Nuttx Targets](https://github.com/PX4/PX4-Autopilot/workflows/Nuttx%20Targets/badge.svg)](https://github.com/PX4/PX4-Autopilot/actions?query=workflow%3A%22Nuttx+Targets%22?branch=master) [![SITL Tests](https://github.com/PX4/PX4-Autopilot/workflows/SITL%20Tests/badge.svg?branch=master)](https://github.com/PX4/PX4-Autopilot/actions?query=workflow%3A%22SITL+Tests%22)
-
-[![Discord Shield](https://discordapp.com/api/guilds/1022170275984457759/widget.png?style=shield)](https://discord.gg/dronecode)
-
-This repository holds the [PX4](http://px4.io) flight control solution for drones, with the main applications located in the [src/modules](https://github.com/PX4/PX4-Autopilot/tree/main/src/modules) directory. It also contains the PX4 Drone Middleware Platform, which provides drivers and middleware to run drones.
-
-PX4 is highly portable, OS-independent and supports Linux, NuttX and MacOS out of the box.
-
-* Official Website: http://px4.io (License: BSD 3-clause, [LICENSE](https://github.com/PX4/PX4-Autopilot/blob/main/LICENSE))
-* [Supported airframes](https://docs.px4.io/main/en/airframes/airframe_reference.html) ([portfolio](https://px4.io/ecosystem/commercial-systems/)):
-  * [Multicopters](https://docs.px4.io/main/en/frames_multicopter/)
-  * [Fixed wing](https://docs.px4.io/main/en/frames_plane/)
-  * [VTOL](https://docs.px4.io/main/en/frames_vtol/)
-  * [Autogyro](https://docs.px4.io/main/en/frames_autogyro/)
-  * [Rover](https://docs.px4.io/main/en/frames_rover/)
-  * many more experimental types (Blimps, Boats, Submarines, High altitude balloons, etc)
-* Releases: [Downloads](https://github.com/PX4/PX4-Autopilot/releases)
+## offb Node
+This node has 3 jobs.
+1. Switch to offboard mode and checks if it's disconnected to try switching again.
+2. Arm the vehicle and checks if it's disarmed to try arming again.
+3. Publishing values to `ActuatorMotors` topic.
 
 
-## Building a PX4 based drone, rover, boat or robot
+## Offboard and Mavros Installation
+- Install Deps
 
-The [PX4 User Guide](https://docs.px4.io/main/en/) explains how to assemble [supported vehicles](https://docs.px4.io/main/en/airframes/airframe_reference.html) and fly drones with PX4.
-See the [forum and chat](https://docs.px4.io/main/en/#getting-help) if you need help!
+```bash
+sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
+```
+
+- Create a workspace.
+
+```bash
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+git clone https://github.com/Mu99-M/offboard_testing.git --recursive
+cd ..
+catkin build
+source devel/setup.bash
+```
+
+This should install mavros, mavlink, and offb packages.
+
+<!--
+### Install MAVLink:
+```bash
+rosinstall_generator --rosdistro noetic mavlink | tee /tmp/mavros.rosinstall
+```
+### Install MAVROS: get source (upstream - released):
+```bash
+rosinstall_generator --upstream mavros | tee -a /tmp/mavros.rosinstall
+```
+### Create workspace & deps:
+```bash
+wstool merge -t src /tmp/mavros.rosinstall
+wstool update -t src -j4
+rosdep install --from-paths src --ignore-src -y
+```
+### Install GeographicLib datasets:
+```bash
+sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh
+```
+### Build source:
+```bash
+cd ~/catkin_ws
+catkin build
+```
+Make sure that you use setup.bash from workspace. Else rosrun can't find nodes from this workspace.
+```bash
+source devel/setup.bash
+```
+### Fetch our work:
+1. Mavros
+
+```bash
+cd ~/catkin_ws/src/mavros/
+git remote add upstream https://github.com/Mu99-M/mavros.git
+git fetch upstream
+git checkout MK_ROS
+```
+
+2. Mavlink
+
+```bash
+cd ~/catkin_ws/src/mavlink/
+git remote add upstream https://github.com/Mu99-M/mavlink-gbp-release.git
+git fetch upstream
+git checkout MK_MAVLINK
+```
+### Rebuild catkin_ws:
+```bash
+cd ~/catkin_ws
+catkin build
+```
+-->
 
 
-## Changing code and contributing
-
-This [Developer Guide](https://docs.px4.io/main/en/development/development.html) is for software developers who want to modify the flight stack and middleware (e.g. to add new flight modes), hardware integrators who want to support new flight controller boards and peripherals, and anyone who wants to get PX4 working on a new (unsupported) airframe/vehicle.
-
-Developers should read the [Guide for Contributions](https://docs.px4.io/main/en/contribute/).
-See the [forum and chat](https://docs.px4.io/main/en/#getting-help) if you need help!
-
-
-### Weekly Dev Call
-
-The PX4 Dev Team syncs up on a [weekly dev call](https://docs.px4.io/main/en/contribute/).
-
-> **Note** The dev call is open to all interested developers (not just the core dev team). This is a great opportunity to meet the team and contribute to the ongoing development of the platform. It includes a QA session for newcomers. All regular calls are listed in the [Dronecode calendar](https://www.dronecode.org/calendar/).
+### Installing:
+```bash
+cd ~/catkin_ws/src/
+git clone -b master https://github.com/Mu99-M/offb.git --recursive
+cd ~/catkin_ws
+catkin build
+```
+Now everthing is ready to be used from companion computer side.
 
 
-## Maintenance Team
+# QGroundControl (QGC)
+### Deps Before Installing:
+```bash
+sudo usermod -a -G dialout $USER
+sudo apt-get remove modemmanager -y
+sudo apt install gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl -y
+sudo apt install libqt5gui5 -y
+sudo apt install libfuse2 -y
+```
+After that you should sign out and sign in again to enable the change to user permissions. Please save any unsaved work.
 
-  * Project: Founder
-    * [Lorenz Meier](https://github.com/LorenzMeier)
-  * Architecture
-    * [Daniel Agar](https://github.com/dagar)
-  * [Dev Call](https://github.com/PX4/PX4-Autopilot/labels/devcall)
-    * [Ramon Roche](https://github.com/mrpollo)
-  * Communication Architecture
-    * [Beat Kueng](https://github.com/bkueng)
-    * [Julian Oes](https://github.com/JulianOes)
-  * UI in QGroundControl
-    * [Gus Grubba](https://github.com/dogmaphobic)
-  * [Multicopter Flight Control](https://github.com/PX4/PX4-Autopilot/labels/multicopter)
-    * [Mathieu Bresciani](https://github.com/bresch)
-  * [Multicopter Software Architecture](https://github.com/PX4/PX4-Autopilot/labels/multicopter)
-    * [Matthias Grob](https://github.com/MaEtUgR)
-  * [VTOL Flight Control](https://github.com/PX4/PX4-Autopilot/labels/vtol)
-    * [Roman Bapst](https://github.com/RomanBapst)
-  * [Fixed Wing Flight Control](https://github.com/PX4/PX4-Autopilot/labels/fixedwing)
-    * [Roman Bapst](https://github.com/RomanBapst)
-  * OS / NuttX
-    * [David Sidrane](https://github.com/davids5)
-  * Driver Architecture
-    * [Daniel Agar](https://github.com/dagar)
-  * Commander Architecture
-    * [Julian Oes](https://github.com/julianoes)
-  * [UAVCAN](https://github.com/PX4/PX4-Autopilot/labels/uavcan)
-    * [Daniel Agar](https://github.com/dagar)
-  * [State Estimation](https://github.com/PX4/PX4-Autopilot/issues?q=is%3Aopen+is%3Aissue+label%3A%22state+estimation%22)
-    * [Paul Riseborough](https://github.com/priseborough)
-  * Vision based navigation and Obstacle Avoidance
-    * [Markus Achtelik](https://github.com/markusachtelik)
-  * DDS/ROS2 Interface
-    * [Nuno Marques](https://github.com/TSC21)
+### To install QGroundControl:
+1. Download [QGroundControl.AppImage](https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl.AppImage).
+2. Install (and run) using the terminal commands:
+```bash
+chmod +x ./QGroundControl.AppImage
+./QGroundControl.AppImage  # (or double click)
+```
 
-See also [maintainers list](https://px4.io/community/maintainers/) (px4.io) and the [contributors list](https://github.com/PX4/PX4-Autopilot/graphs/contributors) (Github).
 
-## Supported Hardware
+# Setup of Pixhawk / PX4
 
-This repository contains code supporting Pixhawk standard boards (best supported, best tested, recommended choice) and proprietary boards.
+## Firmware Installation
+You can either use our pre-buit firmware files or build the firmware from source. Both procedures are describe below:
 
-### Pixhawk Standard Boards
-  * FMUv6X and FMUv6U (STM32H7, 2021)
-    * Various vendors will provide FMUv6X and FMUv6U based designs Q3/2021
-  * FMUv5 and FMUv5X (STM32F7, 2019/20)
-    * [Pixhawk 4 (FMUv5)](https://docs.px4.io/main/en/flight_controller/pixhawk4.html)
-    * [Pixhawk 4 mini (FMUv5)](https://docs.px4.io/main/en/flight_controller/pixhawk4_mini.html)
-    * [CUAV V5+ (FMUv5)](https://docs.px4.io/main/en/flight_controller/cuav_v5_plus.html)
-    * [CUAV V5 nano (FMUv5)](https://docs.px4.io/main/en/flight_controller/cuav_v5_nano.html)
-    * [Auterion Skynode (FMUv5X)](https://docs.auterion.com/skynode)
-  * FMUv4 (STM32F4, 2015)
-    * [Pixracer](https://docs.px4.io/main/en/flight_controller/pixracer.html)
-    * [Pixhawk 3 Pro](https://docs.px4.io/main/en/flight_controller/pixhawk3_pro.html)
-  * FMUv3 (STM32F4, 2014)
-    * [Pixhawk 2](https://docs.px4.io/main/en/flight_controller/pixhawk-2.html)
-    * [Pixhawk Mini](https://docs.px4.io/main/en/flight_controller/pixhawk_mini.html)
-    * [CUAV Pixhack v3](https://docs.px4.io/main/en/flight_controller/pixhack_v3.html)
-  * FMUv2 (STM32F4, 2013)
-    * [Pixhawk](https://docs.px4.io/main/en/flight_controller/pixhawk.html)
-    * [Pixfalcon](https://docs.px4.io/main/en/flight_controller/pixfalcon.html)
+### Loading pre-built firmware to Pixhawk:
 
-### Manufacturer and Community supported
-  * [Holybro Durandal](https://docs.px4.io/main/en/flight_controller/durandal.html)
-  * [Hex Cube Orange](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orange.html)
-  * [Hex Cube Yellow](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_yellow.html)
-  * [Airmind MindPX V2.8](http://www.mindpx.net/assets/accessories/UserGuide_MindPX.pdf)
-  * [Airmind MindRacer V1.2](http://mindpx.net/assets/accessories/mindracer_user_guide_v1.2.pdf)
-  * [Bitcraze Crazyflie 2.0](https://docs.px4.io/main/en/complete_vehicles/crazyflie2.html)
-  * [Omnibus F4 SD](https://docs.px4.io/main/en/flight_controller/omnibus_f4_sd.html)
-  * [Holybro Kakute F7](https://docs.px4.io/main/en/flight_controller/kakutef7.html)
-  * [Raspberry PI with Navio 2](https://docs.px4.io/main/en/flight_controller/raspberry_pi_navio2.html)
+You can find the files for pre-built firmware on this [link](https://drive.google.com/drive/folders/1ms6OHxm7kN3-U2eWSx3bNYO67roZdURy?usp=drive_link). Download the firmware suitabe for your FMU version and upload it to your pixhawk using QGroundControl as explained in this [guide](https://docs.qgroundcontrol.com/master/en/SetupView/Firmware.html).
 
-Additional information about supported hardware can be found in [PX4 user Guide > Autopilot Hardware](https://docs.px4.io/main/en/flight_controller/).
 
-## Project Roadmap
+### Building custom firmware from source:
+#### Deps Before Cloning:
+These installations solved all of the errors I faced.
+```bash
+sudo apt install python3-pip -y
+pip3 install kconfiglib
+sudo apt install gcc-arm-none-eabi -y
+pip3 install --user jinja2
+pip3 install --user jsonschema
+```
 
-A high level project roadmap is available [here](https://github.com/orgs/PX4/projects/25).
+#### Cloning PX4:
+Clone the branch `MK` from `Mu99-M/PX4-Autopilot` in home directory.
+```bash
+cd ~
+git clone -b MK https://github.com/Mu99-M/PX4-Autopilot.git --recursive
+```
+#### Install gstreamer for SITL:
+```bash
+sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
+```
 
-## Project Governance
+#### Building PX4:
+Now you can build PX4 again for SITL without any problem. The final result of the following command should open gazebo with the drone in it.
+```bash
+cd ~/PX4-Autopilot
+make px4_sitl gazebo
+```
+To build for Pixhawk 4 (FMUv5):
+```bash
+cd ~/PX4-Autopilot
+make px4_fmu-v5_default
+```
+For any other version check [this link](https://docs.px4.io/main/en/dev_setup/building_px4.html#building-for-nuttx).
 
-The PX4 Autopilot project including all of its trademarks is hosted under [Dronecode](https://www.dronecode.org/), part of the Linux Foundation.
+## Setup ethernet communication with pixhawk (Optional):
+You can refer to this [guide](https://docs.px4.io/main/en/advanced_config/ethernet_setup.html) to setup ethernet communication with you pixhawk if your pixhawk supports this (e.g. pixhawk 5x or 6x). If using the pixhawk cm4 baseboard with raspberry pi, you can refer to this [guide](https://docs.holybro.com/autopilot/pixhawk-baseboards/pixhawk-rpi-cm4-baseboard/ethernet-connection). The process to setup ethernet comunication with pixhawk is briefly explained below in the report in `1. Using Ethernet` subsection.
 
-<a href="https://www.dronecode.org/" style="padding:20px" ><img src="https://mavlink.io/assets/site/logo_dronecode.png" alt="Dronecode Logo" width="110px"/></a>
-<a href="https://www.linuxfoundation.org/projects" style="padding:20px;"><img src="https://mavlink.io/assets/site/logo_linux_foundation.png" alt="Linux Foundation Logo" width="80px" /></a>
-<div style="padding:10px">&nbsp;</div>
+
+## PX4 parameter configurations
+To configure the PX4 parameters correctly, you can directly upload a pre-configures file to your pixhawk / SITL. You can also configure the needed parameters manually as describe later in this guide.
+
+### Loading pre-configured parameters set
+You can find pre-configured parameters files on [this link](https://drive.google.com/drive/folders/1zgydF3k8lJNwXT9q2XfnUk0Gt9lqb0XE?usp=drive_link). You can upload the pre-configured parameter file to pixhawk using QGroundControl as described in [this link](https://docs.qgroundcontrol.com/master/en/SetupView/Parameters.html)
+
+### Manually configure paramaters (Optional)
+You can change px4 parameters from QGroundControl as described [here](https://docs.qgroundcontrol.com/master/en/SetupView/Parameters.html) The major needed parameter changes are described below:
+
+
+#### Configuring the MAVLINK instance
+
+##### 1. Using Ethernet
+
+If you have already configured a static IP for your pixhawk and companion computer as explained in this [guide](https://docs.px4.io/main/en/advanced_config/ethernet_setup.html), you can skip to step 8.
+1. Connect the pixhawk to QGC using a USB-C cable.
+2. Open QGroundcontrol > Analyze Tools > MAVLink Console.
+3. Enter the following commands: \
+   echo DEVICE=eth0 > /fs/microsd/net.cfg \
+                                        echo BOOTPROTO=static >> /fs/microsd/net.cfg\
+                                        echo IPADDR=192.168.0.4 >> /fs/microsd/net.cfg\
+                                        echo NETMASK=255.255.255.0 >>/fs/microsd/net.cfg\
+                                        echo ROUTER=192.168.0.1 >>/fs/microsd/net.cfg\
+                                        echo DNS=192.168.0.1 >>/fs/microsd/net.cfg\
+   The IPADDR could be chosen by the user. Our default configuration use `IPADDR=192.168.0.4` as the IP address of the pixhawk. The pixhawk subnet should match the subnet of the companion computer.
+4. Connect the pixhawk to an external power source, and connect the ethernet cable to the companion computer / PC.
+5. If the companion computer / PC runs ubuntu: on the Companion Computer / PC, go to network settings > Wired > settings. Go to IPv4 settings and add your IPADDR of your choising (ex: 192.168.0.6) and the NETMASK 255.255.255.0
+6.If the companion computer runs rapsbian (e.g. using CM4 baseboard), refer to this [guide](https://www.ionos.com/digitalguide/server/configuration/provide-raspberry-pi-with-a-static-ip-address/) to setup a static IP for your raspberry bi.
+7. Try to ping the pixhawk ip from the companion computer by running the command `ping 192.168.0.4` from the terminal.
+8. Go to params in QGC and change the following settings `MAV_x_CONFIG`, where `x` is the instance number. Our default configuration uses `x=2` instance for ethernet communication.
+9.  In QGroundControl, search for the `MAV_x_CONFIG` parameter.
+10. Set the value of the `MAV_x_CONFIG` parameter to `ethernet`.
+11. Reboot the vehicle and relaunch QGroundControl.
+12. Set the value of the `MAV_x_MODE` parameter to `Custom`.
+13. Set the value of the `MAV_x_RATE` parameter to `2000000` B/s.
+14. Set the value of the `MAV_x_BROADCAST` parameter to `1`.
+15. Set the value of the `MAV_x_RADIO_CTL` parameter to `0`.
+16. Set the value of the `MAV_x_REMOTE_PRT` parameter to `14540`.
+17. Set the value of the `MAV_x_UDP_PRT` parameter to `14540`.
+18. Reboot the vehicle.
+
+For using MAVROS on the companion computer to communicate with the pixhawk over ethernet, you can run the following command:
+```bash
+roslaunch mavros px4.launch fcu_url:=udp://@IPADDR:14540@
+```
+where IPADDR is the ip address of the pixhawk (by default 192.168.0.4).
+
+
+##### 2. Using UART
+
+1. Choose the MAVLink instance to work on `MAV_x_CONFIG`, where `x` is the instance number. Our default configuration uses `x=1` instance for UART communication.
+2. In QGroundControl, search for the `MAV_x_CONFIG` parameter.
+3. Set the value of the `MAV_x_CONFIG` parameter to the port you are using (e.g., `TELEM 2`).
+4. Reboot the vehicle and relaunch QGroundControl.
+5. Set the value of the `MAV_x_MODE` parameter to `Custom`.
+6. Set the value of the `MAV_x_RATE` parameter to `2000000` B/s.
+7. Reboot the vehicle.
+
+After completing these steps, your MAVLink instance should be configured and ready to use.
+
+
+#### Disablig landing detector
+The landing detector of the PX4 can disarm the drone if not configured properly. As such, it is recommended to disable this module by setting the below parameters in QGroundControl:
+1. Set the value of the `COM_DISARM_LAND` parameter to `-1`.
+2. Set the value of the `MPC_THR_HOVER` parameter to a low value (e.g. `0.25`).
+
+#### Change Frequency for navigation topics
+We are interested in 3 topics for now (`VEHICLE_ANGULAR_VELOCITY`, `VEHICLE_ATTITUDE`, and `VEHICLE_LOCAL_POSITION`).
+
+###### 1. Change the Publishing Rate in the Mavlink
+First, run `uorb top -1` in the Mavlink shell to check the publishing rate of each topic. Each topic of the three mentioned above should be **at least** 200 Hz.
+
+To change the rate of `VEHICLE_ATTITUDE` and `VEHICLE_LOCAL_POSITION`:
+
+1. Set the parameter `IMU_INTEG_RATE` to be 400 Hz.
+2. Set the parameter `EKF2_PREDICT_US` to be 2500.
+
+Note: The parameter `IMU_INTEG_RATE` is to change the rate of the `VEHICLE_ATTITUDE` topic.
+
+Note: The `EKF2_PREDICT_US` is to change the rate of the `VEHICLE_LOCAL_POSITION` topic, however, the topic rate will be limited to the `IMU_INTEG_RATE` parameter value.
+
+Run `uorb top -1` in the Mavlink shell to re-check the publishing rate of the topics after applying the changes.
+
+
+###### 2. Change the Stream Rate in MAVLINK_MODE_CUSTOM
+
+1. Open `~/PX4-Autopilot/src/modules/mavlink/mavlink_main.cpp`
+
+2. Change the three lines of the topics to be:
+```cpp
+configure_stream_local("VEHICLE_LOCAL_POSITION", 200.0f);
+configure_stream_local("VEHICLE_ATTITUDE", 200.0f);
+configure_stream_local("VEHICLE_ANGULAR_VELOCITY", 200.0f);
+```
+
+3. Save, build, and upload to the pixhawk 6x. To [build](https://docs.px4.io/main/en/flight_controller/pixhawk6c.html#building-firmware) PX4 for pixhawk 6c:
+
+```bash
+cd ~/PX4-Autopilot/
+make px4_fmu-v6x_default upload
+```
+
+A successful run will end with this output:
+```bash
+Erase  : [====================] 100.0%
+Program: [====================] 100.0%
+Verify : [====================] 100.0%
+Rebooting.
+
+[100%] Built target upload
+```
+
+###### 3. Check the Topics Frequency in Mavros
+1. Close QGroundControl if open.
+2. Unplug and re-plug the pixhawk.
+3. run:
+```bash
+roslaunch mavros px4.launch
+```
+4. Then run each topic in a separate terminal:
+```bash
+rostopic hz /mavros/vehicle_angular_velocity/vehicle_angular_velocity
+rostopic hz /mavros/vehicle_attitude/vehicle_attitude
+rostopic hz /mavros/vehicle_local_position/vehicle_local_position
+```
+The output should be like this:
+```bash
+average rate: 200.00
+        min: 0.002s max: 0.019s std dev: 0.00572s window: 100
+```
+If the rate is successfully 200 Hz, please start from step 2 again but with 400.0f Hz.
+
+
+# How To Use in SITL
+### Run in the terminal:
+```bash
+cd ~/PX4-Autopilot/
+make px4_sitl gazebo
+```
+
+### Initialize mavros in another terminal:
+```bash
+roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
+```
+### Now run the `offb` node in another terminal:
+```bash
+rosrun offb offb_node
+```
+
