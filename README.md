@@ -14,20 +14,20 @@ This node has 3 jobs.
 ## Offboard and Mavros Installation
 - Install Deps
 
-        ```bash
-        sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
-        ```
+```bash
+sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
+```
 
 - Create a workspace.
 
-        ```bash
-        mkdir -p ~/catkin_ws/src
-        cd ~/catkin_ws/src
-        git clone https://github.com/Mu99-M/offboard_testing.git --recursive
-        cd ..
-        catkin build
-        source devel/setup.bash
-        ```
+```bash
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+git clone https://github.com/Mu99-M/offboard_testing.git --recursive
+cd ..
+catkin build
+source devel/setup.bash
+```
 
 This should install mavros, mavlink, and offb packages.
 
