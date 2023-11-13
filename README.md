@@ -1,9 +1,6 @@
 ### These instructions are used for Ubuntu 20.04. They could be used in WSL2 or as a dual boot. But it's highly recommended to be used as a dual boot.
 
 # Setup of Companion Computer / PC
-## Mavros
-This is Mavros Source Installion. Refernces ([PX4 docs here](https://docs.px4.io/main/en/ros/mavros_installation.html#source-installation) and [Mavros repo on Github here](https://github.com/mavlink/mavros/tree/master/mavros#source-installation)). Note that they're using ROS Kinetic in the refernces and we are using ROS Noetic. The next instructions work for ROS Noetic.
-
 ## offb Node
 This node has 3 jobs.
 1. Switch to offboard mode and checks if it's disconnected to try switching again.
