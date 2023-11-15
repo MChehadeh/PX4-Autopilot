@@ -12,6 +12,7 @@ This node has 3 jobs.
 
 ```bash
 sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
+pip3 install future
 ```
 
 - Create a workspace.
