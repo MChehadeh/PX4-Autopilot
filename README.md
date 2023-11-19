@@ -7,12 +7,12 @@
     1. Testing SITL with offboard mode.
     2. Testing on hardware (pixhawk).
 
-
+- The flow of the instructions is as follows:
 ```mermaid
 graph TD
 
-subgraph L1
-    style L1 fill:transparent,stroke:#ffffff,stroke-width:0px;
+subgraph L1[Installation Step]
+    style L1 fill:transparent,stroke-width:0px;
     subgraph PX4_Setup
     px4_setup[Install PX4 Dependencies]
     px4_clone[Clone PX4 Firmware]
@@ -31,7 +31,7 @@ subgraph L1
     subgraph Mavros_Setup
         subgraph offboard_testing
         create_ros_workspace[Create a ROS Workspace]
-        clone_packages[Clone MAVROS, MAVLINK, and Offboard Packages]
+        clone_packages[Clone MAVROS, MAVLINK,\nand Offboard Packages]
         create_ros_workspace --> clone_packages
         end
 
@@ -44,12 +44,12 @@ subgraph L1
 end
 
 
-subgraph L2
-    style L2 fill:transparent,stroke:#ffffff,stroke-width:0px;
+subgraph L2[Building/Running Step]
+    style L2 fill:transparent,stroke-width:0px;
     subgraph pixhawk[pixhawk Vx]
     pixhawk_setup[pixhawk_setup]
-    load_firmware[Load pre-built firmware to Pixhawk]
-    build_firmware[Build custom firmware from source]
+    load_firmware[Load pre-built\nfirmware to Pixhawk]
+    build_firmware[Build custom\nfirmware from source]
     pixhawk_setup --> load_firmware
     pixhawk_setup --> build_firmware
 
