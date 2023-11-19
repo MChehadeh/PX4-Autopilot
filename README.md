@@ -7,6 +7,76 @@
     1. Testing SITL with offboard mode.
     2. Testing on hardware (pixhawk).
 
+
+```mermaid
+graph TD
+
+subgraph L1
+    style L1 fill:transparent,stroke:#ffffff,stroke-width:0px;
+    subgraph PX4_Setup
+    px4_setup[Install PX4 Dependencies]
+    px4_clone[Clone PX4 Firmware]
+    pixhawk_pa[pixhawk_setup]
+    SITL_pa[Run PX4_SITL]
+    px4_setup --> px4_clone
+    px4_clone -->pixhawk_pa
+    px4_clone -->SITL_pa
+
+    style SITL_pa stroke-dasharray: 5,5;
+    style pixhawk_pa stroke-dasharray: 5,5;
+
+    end
+
+
+    subgraph Mavros_Setup
+        subgraph offboard_testing
+        create_ros_workspace[Create a ROS Workspace]
+        clone_packages[Clone MAVROS, MAVLINK, and Offboard Packages]
+        create_ros_workspace --> clone_packages
+        end
+
+    install_ros[Install ROS Noetic]
+    build_packages[Build the Packages]
+
+    install_ros --> offboard_testing
+    offboard_testing --> build_packages
+    end
+end
+
+
+subgraph L2
+    style L2 fill:transparent,stroke:#ffffff,stroke-width:0px;
+    subgraph pixhawk[pixhawk Vx]
+    pixhawk_setup[pixhawk_setup]
+    load_firmware[Load pre-built firmware to Pixhawk]
+    build_firmware[Build custom firmware from source]
+    pixhawk_setup --> load_firmware
+    pixhawk_setup --> build_firmware
+
+    style pixhawk_setup stroke-dasharray: 5,5;
+
+    end
+
+    subgraph Run_SITL
+    run_sitl[Run PX4_SITL]
+    launch_mavros[Launch px4.launch Node]
+    run_offboard[Run offb Node]
+
+    run_sitl --> launch_mavros
+    launch_mavros --> run_offboard
+
+    style run_sitl stroke-dasharray: 5,5;
+
+    end
+
+end
+
+pixhawk_pa -.- pixhawk_setup
+SITL_pa -.- run_sitl
+build_packages --> launch_mavros
+```
+
+
 ## Table of Contents
 
 1. [Setup of Companion Computer / PC](#Setup_of_Companion_Computer)
