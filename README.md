@@ -9,7 +9,7 @@
 ## Table of Contents
 
 1. [Setup of Companion Computer / PC](#Setup_of_Companion_Computer)
-    1. [PX4-Autopilot_Installation](#PX4-Autopilot_Installation)
+    1. [PX4-Autopilot Installation](#PX4-Autopilot_Installation)
     2. [Mavros and Offboard Installation](#Mavros_and_Offboard_Installation)
     3. [QGroundControl](#QGroundControl)
 2. [Run SITL in offboard mode](#How_to_run_SITL_in_offboard_mode)
@@ -91,7 +91,7 @@ roslaunch offb starting.launch
 ```
 
 # Setup of Pixhawk / PX4 <a name="Setup_of_Pixhawk"></a>
-You can either use [(1) pre-buit](#pre-built) firmware files or [(2) custom build](#custom) the firmware from source. Both procedures are describe below:
+You can either use [(1) pre-buit](#pre-built) firmware files or [(2) custom built](#custom) the firmware from source. Both procedures are describe below:
 
 ## 1. Loading pre-built firmware to Pixhawk: <a name="pre-built"></a>
 
