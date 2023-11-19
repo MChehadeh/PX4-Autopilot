@@ -9,7 +9,7 @@
 ## Table of Contents
 
 1. [Setup of Companion Computer / PC](#Setup_of_Companion_Computer)
-    1. [PX4 Installation](#PX4_Installation)
+    1. [PX4-Autopilot_Installation](#PX4-Autopilot_Installation)
     2. [Mavros and Offboard Installation](#Mavros_and_Offboard_Installation)
     3. [QGroundControl](#QGroundControl)
 2. [Run SITL in offboard mode](#How_to_run_SITL_in_offboard_mode)
@@ -20,7 +20,7 @@
 # Setup of Companion Computer / PC <a name="Setup_of_Companion_Computer"></a>
 We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a communication between PX4 and ROS.
 
-## PX4 Installation <a name="PX4_Installation"></a>
+## PX4-Autopilot Installation <a name="PX4-Autopilot_Installation"></a>
 - Install dependencies:
 
 ```bash
@@ -63,7 +63,7 @@ catkin build
 source devel/setup.bash
 ```
 
-<input type="checkbox" checked> Now everthing is ready to be used from companion computer side.
+Now everthing is ready to be used from companion computer side.
 
 ## QGroundControl QGC (Optional) <a name="QGroundControl"></a>
 - QGroundControl is a open-source ground control station software that let us to plan, monitor, and control vehicles. With features ranging from mission planning and telemetry monitoring to vehicle configuration and real-time control.
