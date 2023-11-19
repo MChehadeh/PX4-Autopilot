@@ -5,6 +5,7 @@
 
 - This repo is mainly used for:
     1. Testing SITL with offboard mode.
+    2. Testing on hardware (pixhawk).
 
 ## Table of Contents
 
@@ -91,7 +92,7 @@ roslaunch offb starting.launch
 ```
 
 # Setup of Pixhawk / PX4 <a name="Setup_of_Pixhawk"></a>
-You can either use [(1) pre-buit](#pre-built) firmware files or [(2) custom built](#custom) the firmware from source. Both procedures are describe below:
+You can either use [(1) pre-buit](#pre-built) firmware files or [(2) custom build](#custom) the firmware from source. Both procedures are describe below:
 
 ## 1. Loading pre-built firmware to Pixhawk: <a name="pre-built"></a>
 
