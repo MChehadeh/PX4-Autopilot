@@ -24,21 +24,21 @@ We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a comm
 ## PX4-Autopilot Installation <a name="PX4-Autopilot_Installation"></a>
 - Install dependencies:
 
-```bash
-sudo apt install python3-pip -y
-pip3 install kconfiglib
-sudo apt install gcc-arm-none-eabi -y
-pip3 install --user jinja2
-pip3 install --user jsonschema
-sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
-```
+    ```bash
+    sudo apt install python3-pip -y
+    pip3 install kconfiglib
+    sudo apt install gcc-arm-none-eabi -y
+    pip3 install --user jinja2
+    pip3 install --user jsonschema
+    sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
+    ```
 
 - Clone `PX4-Autopilot` into home directory:
 
-```bash
-cd ~
-git clone https://github.com/Mu99-M/PX4-Autopilot.git --recursive
-```
+    ```bash
+    cd ~
+    git clone https://github.com/Mu99-M/PX4-Autopilot.git --recursive
+    ```
 
 ## Mavros and Offboard Installation <a name="Mavros_and_Offboard_Installation"></a>
 - The offb node has 3 jobs:
@@ -46,23 +46,26 @@ git clone https://github.com/Mu99-M/PX4-Autopilot.git --recursive
     2. Arm the vehicle and checks if it's disarmed to try arming again.
     3. Publishing values to SITL.
 
-- Install dependencies:
+### Pre-installation:
+1. Install ROS Noetic if not installed following [this guide](https://wiki.ros.org/noetic/Installation/Ubuntu).
 
-```bash
-sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
-pip3 install future
-```
+2. Install these dependencies:
 
-- Create a workspace:
+    ```bash
+    sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
+    pip3 install future
+    ```
 
-```bash
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
-git clone https://github.com/Mu99-M/offboard_testing.git --recursive
-cd ..
-catkin build
-source devel/setup.bash
-```
+### Installation:
+
+    ```bash
+    mkdir -p ~/catkin_ws/src
+    cd ~/catkin_ws/src
+    git clone https://github.com/Mu99-M/offboard_testing.git --recursive
+    cd ..
+    catkin build
+    source devel/setup.bash
+    ```
 
 Now everthing is ready to be used from companion computer side.
 
@@ -74,22 +77,22 @@ Now everthing is ready to be used from companion computer side.
 # How to run SITL in offboard mode <a name="How_to_run_SITL_in_offboard_mode"></a>
 1. Build px4 in sitl
 
-```bash
-cd ~/PX4-Autopilot/
-make px4_sitl_default none
-```
+    ```bash
+    cd ~/PX4-Autopilot/
+    make px4_sitl_default none
+    ```
 
 2. Launch px4.launch node
 
-```bash
-roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
-```
+    ```bash
+    roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
+    ```
 
 3. Launch the starting node
 
-```bash
-roslaunch offb starting.launch
-```
+    ```bash
+    roslaunch offb starting.launch
+    ```
 
 # Setup of Pixhawk / PX4 <a name="Setup_of_Pixhawk"></a>
 You can either use [(1) pre-buit](#pre-built) firmware files or [(2) custom build](#custom) the firmware from source. Both procedures are describe below:
@@ -102,10 +105,12 @@ You can find the files for pre-built firmware in the `PX4-Autopilot/compiled fir
 ## 2. Building custom firmware from source: <a name="custom"></a>
 ### Building PX4:
 To build for Pixhawk 4 (FMUv5):
-```bash
-cd ~/PX4-Autopilot
-make px4_fmu-v5_default
-```
+
+    ```bash
+    cd ~/PX4-Autopilot
+    make px4_fmu-v5_default
+    ```
+
 For any other version check [this link](https://docs.px4.io/main/en/dev_setup/building_px4.html#building-for-nuttx).
 
 ### Uploading firmware:
