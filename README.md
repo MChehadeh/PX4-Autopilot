@@ -1,21 +1,58 @@
 ### These instructions are used for Ubuntu 20.04. They could be used in WSL2 or as a dual boot. But it's highly recommended to be used as a dual boot.
 
-# Setup of Companion Computer / PC
-## offb Node
-This node has 3 jobs.
-1. Switch to offboard mode and checks if it's disconnected to try switching again.
-2. Arm the vehicle and checks if it's disarmed to try arming again.
-3. Publishing values to `ActuatorMotors` topic.
+# Overview
+- This is a re-published (not forked) repo of the original PX4-Autopilot. It also includes the settings file of PX4 for different variants of UAVs, and the relevant setup information. The main applications located in the `src/modules` directory.
 
-## Offboard and Mavros Installation
-- Install Deps
+- This repo is mainly used for:
+    1. Testing SITL with offboard mode.
+
+## Table of Contents
+
+1. [Setup of Companion Computer / PC](#Setup_of_Companion_Computer)
+    1. [PX4 Installation](#PX4_Installation)
+    2. [Mavros and Offboard Installation](#Mavros_and_Offboard_Installation)
+    3. [QGroundControl](#QGroundControl)
+2. [Run SITL in offboard mode](#How_to_run_SITL_in_offboard_mode)
+3. [Setup of Pixhawk](#Setup_of_Pixhawk)
+    1. [Loading pre-built firmware](#pre-built)
+    2. [Building custom firmware](#custom)
+
+# Setup of Companion Computer / PC <a name="Setup_of_Companion_Computer"></a>
+We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a communication between PX4 and ROS.
+
+## PX4 Installation <a name="PX4_Installation"></a>
+- Install dependencies:
+
+```bash
+sudo apt install python3-pip -y
+pip3 install kconfiglib
+sudo apt install gcc-arm-none-eabi -y
+pip3 install --user jinja2
+pip3 install --user jsonschema
+sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
+```
+
+- Clone `PX4-Autopilot` into home directory:
+
+```bash
+cd ~
+git clone https://github.com/Mu99-M/PX4-Autopilot.git --recursive
+```
+
+## Mavros and Offboard Installation <a name="Mavros_and_Offboard_Installation"></a>
+- The offb node has 3 jobs:
+    1. Switch to offboard mode and checks if it's disconnected to try switching again.
+    2. Arm the vehicle and checks if it's disarmed to try arming again.
+    3. Publishing values to SITL.
+
+- Install dependencies:
 
 ```bash
 sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
 pip3 install future
 ```
 
-- Create a workspace.
+- Create a workspace:
 
 ```bash
 mkdir -p ~/catkin_ws/src
@@ -25,129 +62,44 @@ cd ..
 catkin build
 source devel/setup.bash
 ```
-Now everthing is ready to be used from companion computer side.
 
-<!--
-### Install MAVLink:
-```bash
-rosinstall_generator --rosdistro noetic mavlink | tee /tmp/mavros.rosinstall
-```
-### Install MAVROS: get source (upstream - released):
-```bash
-rosinstall_generator --upstream mavros | tee -a /tmp/mavros.rosinstall
-```
-### Create workspace & deps:
-```bash
-wstool merge -t src /tmp/mavros.rosinstall
-wstool update -t src -j4
-rosdep install --from-paths src --ignore-src -y
-```
-### Install GeographicLib datasets:
-```bash
-sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh
-```
-### Build source:
-```bash
-cd ~/catkin_ws
-catkin build
-```
-Make sure that you use setup.bash from workspace. Else rosrun can't find nodes from this workspace.
-```bash
-source devel/setup.bash
-```
-### Fetch our work:
-1. Mavros
+<input type="checkbox" checked> Now everthing is ready to be used from companion computer side.
+
+## QGroundControl QGC (Optional) <a name="QGroundControl"></a>
+- QGroundControl is a open-source ground control station software that let us to plan, monitor, and control vehicles. With features ranging from mission planning and telemetry monitoring to vehicle configuration and real-time control.
+
+- QGroundControl can be installed on Ubuntu LTS 20.04 (and later). Please follow the instructions in [this link](https://docs.qgroundcontrol.com/master/en/getting_started/download_and_install.html#ubuntu) for QGC installation.
+
+# How to run SITL in offboard mode <a name="How_to_run_SITL_in_offboard_mode"></a>
+1. Build px4 in sitl
 
 ```bash
-cd ~/catkin_ws/src/mavros/
-git remote add upstream https://github.com/Mu99-M/mavros.git
-git fetch upstream
-git checkout MK_ROS
+cd ~/PX4-Autopilot/
+make px4_sitl_default none
 ```
 
-2. Mavlink
+2. Launch px4.launch node
 
 ```bash
-cd ~/catkin_ws/src/mavlink/
-git remote add upstream https://github.com/Mu99-M/mavlink-gbp-release.git
-git fetch upstream
-git checkout MK_MAVLINK
+roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
 ```
-### Rebuild catkin_ws:
+
+3. Launch the starting node
+
 ```bash
-cd ~/catkin_ws
-catkin build
+roslaunch offb starting.launch
 ```
 
-### Installing:
-```bash
-cd ~/catkin_ws/src/
-git clone -b master https://github.com/Mu99-M/offb.git --recursive
-cd ~/catkin_ws
-catkin build
-```
-Now everthing is ready to be used from companion computer side.
--->
+# Setup of Pixhawk / PX4 <a name="Setup_of_Pixhawk"></a>
+You can either use [(1) pre-buit](#pre-built) firmware files or [(2) custom build](#custom) the firmware from source. Both procedures are describe below:
+
+## 1. Loading pre-built firmware to Pixhawk: <a name="pre-built"></a>
+
+You can find the files for pre-built firmware in the `PX4-Autopilot/compiled firmware` directory. Upload the firmware suitabe for your FMU version to your pixhawk using QGroundControl as explained in this [guide](https://docs.qgroundcontrol.com/master/en/SetupView/Firmware.html).
 
 
-# QGroundControl (QGC)
-### Deps Before Installing:
-```bash
-sudo usermod -a -G dialout $USER
-sudo apt-get remove modemmanager -y
-sudo apt install gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl -y
-sudo apt install libqt5gui5 -y
-sudo apt install libfuse2 -y
-```
-After that you should sign out and sign in again to enable the change to user permissions. Please save any unsaved work.
-
-### To install QGroundControl:
-1. Download [QGroundControl.AppImage](https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl.AppImage).
-2. Install (and run) using the terminal commands:
-```bash
-chmod +x ./QGroundControl.AppImage
-./QGroundControl.AppImage  # (or double click)
-```
-
-
-# Setup of Pixhawk / PX4
-
-## Firmware Installation
-You can either use our pre-buit firmware files or build the firmware from source. Both procedures are describe below:
-
-### Loading pre-built firmware to Pixhawk:
-
-You can find the files for pre-built firmware on this [link](https://drive.google.com/drive/folders/1ms6OHxm7kN3-U2eWSx3bNYO67roZdURy?usp=drive_link). Download the firmware suitabe for your FMU version and upload it to your pixhawk using QGroundControl as explained in this [guide](https://docs.qgroundcontrol.com/master/en/SetupView/Firmware.html).
-
-
-### Building custom firmware from source:
-#### Deps Before Cloning:
-These installations solved all of the errors I faced.
-```bash
-sudo apt install python3-pip -y
-pip3 install kconfiglib
-sudo apt install gcc-arm-none-eabi -y
-pip3 install --user jinja2
-pip3 install --user jsonschema
-```
-
-#### Cloning PX4:
-Clone `Mu99-M/PX4-Autopilot` in home directory.
-```bash
-cd ~
-git clone https://github.com/Mu99-M/PX4-Autopilot.git --recursive
-```
-#### Install gstreamer for SITL:
-```bash
-sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
-```
-
-#### Building PX4:
-Now you can build PX4 again for SITL without any problem. The final result of the following command should open gazebo with the drone in it.
-```bash
-cd ~/PX4-Autopilot
-make px4_sitl gazebo
-```
+## 2. Building custom firmware from source: <a name="custom"></a>
+### Building PX4:
 To build for Pixhawk 4 (FMUv5):
 ```bash
 cd ~/PX4-Autopilot
@@ -155,7 +107,10 @@ make px4_fmu-v5_default
 ```
 For any other version check [this link](https://docs.px4.io/main/en/dev_setup/building_px4.html#building-for-nuttx).
 
-## Setup ethernet communication with pixhawk (Optional):
+### Uploading firmware:
+Upload the firmware to your pixhawk using QGroundControl as explained in this [guide](https://docs.qgroundcontrol.com/master/en/SetupView/Firmware.html).
+
+# Setup ethernet communication with pixhawk (Optional):
 You can refer to this [guide](https://docs.px4.io/main/en/advanced_config/ethernet_setup.html) to setup ethernet communication with you pixhawk if your pixhawk supports this (e.g. pixhawk 5x or 6x). If using the pixhawk cm4 baseboard with raspberry pi, you can refer to this [guide](https://docs.holybro.com/autopilot/pixhawk-baseboards/pixhawk-rpi-cm4-baseboard/ethernet-connection). The process to setup ethernet comunication with pixhawk is briefly explained below in the report in `1. Using Ethernet` subsection.
 
 
@@ -254,7 +209,7 @@ configure_stream_local("VEHICLE_ATTITUDE", 200.0f);
 configure_stream_local("VEHICLE_ANGULAR_VELOCITY", 200.0f);
 ```
 
-3. Save, build, and upload to the pixhawk 6x. To [build](https://docs.px4.io/main/en/flight_controller/pixhawk6c.html#building-firmware) PX4 for pixhawk 6c:
+3. Save, build, and upload to the pixhawk 6x. To [build](https://docs.px4.io/main/en/flight_controller/pixhawk6c.html#building-firmware) PX4 for pixhawk 6x:
 
 ```bash
 cd ~/PX4-Autopilot/
@@ -290,21 +245,3 @@ average rate: 200.00
         min: 0.002s max: 0.019s std dev: 0.00572s window: 100
 ```
 If the rate is successfully 200 Hz, please start from step 2 again but with 400.0f Hz.
-
-
-# How To Use in SITL
-1. Start sitl gazebo
-```bash
-cd ~/PX4-Autopilot/
-make px4_sitl gazebo
-```
-
-2. Initialize mavros
-```bash
-roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
-```
-3. Launch the starting node
-```bash
-roslaunch offb starting.launch
-```
-
