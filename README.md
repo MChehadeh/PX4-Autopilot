@@ -58,14 +58,14 @@ We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a comm
 
 ### Installation:
 
-    ```bash
-    mkdir -p ~/catkin_ws/src
-    cd ~/catkin_ws/src
-    git clone https://github.com/Mu99-M/offboard_testing.git --recursive
-    cd ..
-    catkin build
-    source devel/setup.bash
-    ```
+```bash
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/src
+git clone https://github.com/Mu99-M/offboard_testing.git --recursive
+cd ..
+catkin build
+source devel/setup.bash
+```
 
 Now everthing is ready to be used from companion computer side.
 
@@ -106,10 +106,10 @@ You can find the files for pre-built firmware in the `PX4-Autopilot/compiled fir
 ### Building PX4:
 To build for Pixhawk 4 (FMUv5):
 
-    ```bash
-    cd ~/PX4-Autopilot
-    make px4_fmu-v5_default
-    ```
+```bash
+cd ~/PX4-Autopilot
+make px4_fmu-v5_default
+```
 
 For any other version check [this link](https://docs.px4.io/main/en/dev_setup/building_px4.html#building-for-nuttx).
 
