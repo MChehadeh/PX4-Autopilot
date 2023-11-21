@@ -79,6 +79,7 @@ build_packages --> launch_mavros
     2. [Mavros and Offboard Installation](#Mavros_and_Offboard_Installation)
     3. [QGroundControl](#QGroundControl)
 2. [Run SITL in offboard mode](#How_to_run_SITL_in_offboard_mode)
+3. [How to run HEAR_SITL](#HEAR_SITL)
 3. [Setup of Pixhawk](#Setup_of_Pixhawk)
     1. [Loading pre-built firmware](#pre-built)
     2. [Building custom firmware](#custom)
@@ -159,7 +160,7 @@ Now everthing is ready to be used from companion computer side.
     roslaunch offb starting.launch
     ```
 
-# Running HEAR_SITL
+# How to run HEAR_SITL <a name="HEAR_SITL"></a>
 1. Build px4 in sitl
 
     ```bash
