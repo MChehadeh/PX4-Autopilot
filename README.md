@@ -143,11 +143,11 @@ Now everthing is ready to be used from companion computer side.
 1. Build px4 in sitl
 
     ```bash
-    cd ~/PX4-Autopilot/
+    cd ~/PX4-Autopilot
     make px4_sitl_default none
     ```
 
-2. Launch px4.launch node
+2. Launch `px4.launch` node
 
     ```bash
     roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
@@ -157,6 +157,47 @@ Now everthing is ready to be used from companion computer side.
 
     ```bash
     roslaunch offb starting.launch
+    ```
+
+# Running HEAR_SITL
+1. Build px4 in sitl
+
+    ```bash
+    cd ~/PX4-Autopilot
+    make px4_sitl_default none
+    ```
+
+2. Launch `px4.launch` node
+
+    ```bash
+    roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
+    ```
+
+3. Launch `flight_controller`
+
+    ```bash
+    cd ~/HEAR_FC
+    roslaunch flight_controller flight_controller.launch DRONE_NAME:=UAV1
+    ```
+
+4. offb Node
+
+    ```bash
+    roslaunch offb starting.launch
+    ```
+
+5. Launch `mission_scenario`
+
+    ```bash
+    cd ~/HEAR_MC
+    roslaunch hear_mc_example mission_scenario.launch
+    ```
+
+
+- You can publish the position from `vehicle_local_pos` topic
+
+    ```bash
+    rostopic echo /mavros/vehicle_local_position/vehicle_local_pos
     ```
 
 # Setup of Pixhawk / PX4 <a name="Setup_of_Pixhawk"></a>
