@@ -129,6 +129,7 @@ mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
 git clone https://github.com/Mu99-M/offboard_testing.git --recursive
 cd ..
+sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh      # Install GeographicLib datasets
 catkin build
 source devel/setup.bash
 ```
@@ -151,7 +152,7 @@ Now everthing is ready to be used from companion computer side.
 2. Launch `px4.launch` node
 
     ```bash
-    roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
+    roslaunch mavros px4.launch fcu_url:=udp://:14540@14555
     ```
 
 3. Launch the starting node
@@ -171,7 +172,7 @@ Now everthing is ready to be used from companion computer side.
 2. Launch `px4.launch` node
 
     ```bash
-    roslaunch mavros px4.launch fcu_url:=udp://:14550@14557
+    roslaunch mavros px4.launch fcu_url:=udp://:14540@14555
     ```
 
 3. Launch `flight_controller`
