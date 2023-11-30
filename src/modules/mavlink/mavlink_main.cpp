@@ -1706,12 +1706,14 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 		configure_stream_local("VEHICLE_STATUS",2.0f);
 		configure_stream_local("VEHICLE_CONTROL_MODE",2.0f);
 		configure_stream_local("ACTUATOR_ARMED",2.0f);
+		configure_stream_local("POSITION_TARGET_LOCAL_NED", 400.0f);
+		configure_stream_local("HIGHRES_IMU", 400.0f);
 		// configure_stream_local("ACTUATOR_OUTPUTS",100.0f);
 		break;
 
 	case MAVLINK_MODE_CONFIG: // USB
 		// Note: streams requiring low latency come first
-		/*
+
 		configure_stream_local("CAMERA_TRIGGER", unlimited_rate);
 		configure_stream_local("LOCAL_POSITION_NED", 30.0f);
 		configure_stream_local("DISTANCE_SENSOR", 10.0f);
@@ -1764,7 +1766,7 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 		configure_stream_local("VFR_HUD", 20.0f);
 		configure_stream_local("VIBRATION", 2.5f);
 		configure_stream_local("WIND_COV", 10.0f);
-		*/
+
 #if !defined(CONSTRAINED_FLASH)
 		configure_stream_local("DEBUG", 50.0f);
 		configure_stream_local("DEBUG_FLOAT_ARRAY", 50.0f);
