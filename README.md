@@ -111,27 +111,10 @@ We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a comm
     2. Arm the vehicle and checks if it's disarmed to try arming again.
     3. Publishing values to SITL.
 
-### Pre-installation:
+### Installation:
 1. Install ROS Noetic if not installed following [this guide](https://wiki.ros.org/noetic/Installation/Ubuntu).
 
-2. Install these dependencies:
-
-    ```bash
-    sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
-    pip3 install future
-    ```
-
-### Installation:
-
-```bash
-mkdir -p ~/offboard_testing/src
-cd ~/offboard_testing/src
-git clone https://github.com/Mu99-M/offboard_testing.git --recursive
-cd ..
-sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh      # Install GeographicLib datasets
-catkin build
-source devel/setup.bash
-```
+2. Clone and build [offboard_testing](https://github.com/Mu99-M/offboard_testing) repo.
 
 Now everthing is ready to be used from companion computer side.
 
