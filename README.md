@@ -79,7 +79,6 @@ build_packages --> launch_mavros
     2. [Mavros and Offboard Installation](#Mavros_and_Offboard_Installation)
     3. [QGroundControl](#QGroundControl)
 2. [Run SITL in offboard mode](#How_to_run_SITL_in_offboard_mode)
-3. [How to run HEAR_SITL](#HEAR_SITL)
 3. [Setup of Pixhawk](#Setup_of_Pixhawk)
     1. [Loading pre-built firmware](#pre-built)
     2. [Building custom firmware](#custom)
@@ -125,8 +124,8 @@ We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a comm
 ### Installation:
 
 ```bash
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
+mkdir -p ~/offboard_testing/src
+cd ~/offboard_testing/src
 git clone https://github.com/Mu99-M/offboard_testing.git --recursive
 cd ..
 sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh      # Install GeographicLib datasets
@@ -159,47 +158,6 @@ Now everthing is ready to be used from companion computer side.
 
     ```bash
     roslaunch offb starting.launch
-    ```
-
-# How to run HEAR_SITL <a name="HEAR_SITL"></a>
-1. Build px4 in sitl
-
-    ```bash
-    cd ~/PX4-Autopilot
-    make px4_sitl_default none
-    ```
-
-2. Launch `px4.launch` node
-
-    ```bash
-    roslaunch mavros px4.launch fcu_url:=udp://:14540@14555
-    ```
-
-3. Launch `flight_controller`
-
-    ```bash
-    cd ~/HEAR_FC
-    roslaunch flight_controller flight_controller.launch DRONE_NAME:=UAV1
-    ```
-
-4. offb Node
-
-    ```bash
-    roslaunch offb starting.launch
-    ```
-
-5. Launch `mission_scenario`
-
-    ```bash
-    cd ~/HEAR_MC
-    roslaunch hear_mc_example mission_scenario.launch
-    ```
-
-
-- You can publish the position from `vehicle_local_pos` topic
-
-    ```bash
-    rostopic echo /mavros/vehicle_local_position/vehicle_local_pos
     ```
 
 # Setup of Pixhawk / PX4 <a name="Setup_of_Pixhawk"></a>
