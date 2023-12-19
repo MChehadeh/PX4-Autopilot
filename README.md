@@ -98,7 +98,7 @@ We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a comm
     sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
     ```
 
-- Installation Guide:
+- Installation Guide [(Reference)](https://docs.px4.io/main/en/dev_setup/dev_env_linux_ubuntu.html):
 
 1. Clone `PX4-Autopilot` into home directory:
 
