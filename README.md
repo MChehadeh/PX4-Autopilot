@@ -98,12 +98,24 @@ We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a comm
     sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
     ```
 
-- Clone `PX4-Autopilot` into home directory:
+- Installation Guide:
+
+1. Clone `PX4-Autopilot` into home directory:
 
     ```bash
-    cd ~
+    cd
     git clone https://github.com/Mu99-M/PX4-Autopilot.git --recursive
     ```
+
+2. Run the ubuntu.sh with no arguments (in a bash shell) to install everything:
+
+    ```bash
+    cd
+    bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
+    ```
+
+3. Restart the computer on completion.
+
 
 ## Mavros and Offboard Installation <a name="Mavros_and_Offboard_Installation"></a>
 - The offb node has 3 jobs:
@@ -142,6 +154,16 @@ Now everthing is ready to be used from companion computer side.
     ```bash
     roslaunch offb starting.launch
     ```
+
+> Note:
+> You may need to change the airframe if the vehicle is not armed and there is `Preflight Fail`.
+>
+>    ```bash
+>    cd ~/PX4-Autopilot
+>    make px4_sitl_default none
+>    param set SYS_AUTOSTART 3011
+>    ```
+> Then restart the PX4.
 
 # Setup of Pixhawk / PX4 <a name="Setup_of_Pixhawk"></a>
 You can either use [(1) pre-buit](#pre-built) firmware files or [(2) custom build](#custom) the firmware from source. Both procedures are describe below:

@@ -215,6 +215,6 @@ else
 	param set-default MC_PITCHRATE_I 0.0
 	param set-default MC_PITCHRATE_D 0.0
 
-	param set SYS_AUTOSTART 3011
+	param set-default SYS_AUTOSTART 3011
 
 fi
