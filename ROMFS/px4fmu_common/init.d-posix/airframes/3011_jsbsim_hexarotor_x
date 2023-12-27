@@ -56,6 +56,7 @@ param set-default PWM_MAIN_FUNC4 104
 param set-default PWM_MAIN_FUNC5 105
 param set-default PWM_MAIN_FUNC6 106
 
+param set-default EKF2_HGT_REF 3
 param set-default EKF2_GPS_CTRL 0
 param set-default EKF2_BARO_CTRL 0
 param set-default EKF2_RNG_CTRL 0
