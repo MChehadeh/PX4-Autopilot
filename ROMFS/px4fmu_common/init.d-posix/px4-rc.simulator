@@ -202,7 +202,7 @@ else
 		simulator_mavlink start -h "${PX4_SIM_HOSTNAME}" "${simulator_tcp_port}"
 	fi
 
-	param set-default SYS_AUTOSTART 3011
+	param set-default SYS_AUTOSTART 3010
 	# param set SYS_AUTOSTART 3011
 
 	param set-default EKF2_HGT_REF 3
