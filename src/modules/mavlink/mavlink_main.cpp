@@ -1708,6 +1708,7 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 		configure_stream_local("ACTUATOR_ARMED",2.0f);
 		configure_stream_local("POSITION_TARGET_LOCAL_NED", 400.0f);
 		configure_stream_local("HIGHRES_IMU", 400.0f);
+		configure_stream_local("ATTITUDE", 400.0f);
 		// configure_stream_local("ACTUATOR_OUTPUTS",100.0f);
 		break;
 
