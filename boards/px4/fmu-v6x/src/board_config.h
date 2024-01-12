@@ -487,6 +487,9 @@
 
 #define BOARD_NUM_IO_TIMERS 5
 
+// Define TELEM1 Port to be MODAL_IO default port
+#define MODAL_IO_DEFAULT_PORT	"/dev/ttyS6"
+
 __BEGIN_DECLS
 
 /****************************************************************************************************
