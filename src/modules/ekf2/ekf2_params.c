@@ -703,7 +703,7 @@ PARAM_DEFINE_INT32(EKF2_EV_CTRL, 15);
  * @bit 2 3D velocity
  * @bit 3 Dual antenna heading
  */
-PARAM_DEFINE_INT32(EKF2_GPS_CTRL, 7);
+PARAM_DEFINE_INT32(EKF2_GPS_CTRL, 0);
 
 /**
  * Range sensor height aiding
