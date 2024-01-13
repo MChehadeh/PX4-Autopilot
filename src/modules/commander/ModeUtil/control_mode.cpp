@@ -146,7 +146,8 @@ void getVehicleControlMode(bool armed, uint8_t nav_state, uint8_t vehicle_type,
 
 		// MK: Add flag_control_manual_enabled to be true.
 		} else if (offboard_control_mode.actuator) {
-			vehicle_control_mode.flag_control_manual_enabled = true;		}
+			vehicle_control_mode.flag_control_manual_enabled = true;
+		}
 
 		break;
 
