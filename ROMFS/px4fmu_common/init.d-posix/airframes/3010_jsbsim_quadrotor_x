@@ -9,6 +9,7 @@
 
 . ${R}etc/init.d/rc.mc_defaults
 
+PX4_SIM_MODEL=${PX4_SIM_MODEL:=hear_quad}
 
 param set-default CA_AIRFRAME 0
 

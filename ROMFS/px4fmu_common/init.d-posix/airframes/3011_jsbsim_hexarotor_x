@@ -9,6 +9,8 @@
 
 . ${R}etc/init.d/rc.mc_defaults
 
+PX4_SIM_MODEL=${PX4_SIM_MODEL:=hear_hexa}
+
 param set-default CA_AIRFRAME 0
 
 param set-default MAV_TYPE 13

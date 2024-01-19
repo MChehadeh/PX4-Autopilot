@@ -134,6 +134,24 @@ elseif("${PX4_BOARD}" MATCHES "sitl")
 		DEPENDS px4
 	)
 
+	# hear_hexa
+	add_custom_target(hear_hexa
+		COMMAND ${CMAKE_COMMAND} -E env PX4_SYS_AUTOSTART=3011 $<TARGET_FILE:px4>
+		WORKING_DIRECTORY ${SITL_WORKING_DIR}
+		USES_TERMINAL
+		DEPENDS px4
+		COMMENT ">>> launching px4 hear_hexa (SYS_AUTOSTART=3011) <<<"
+	)
+
+	# hear_quad
+	add_custom_target(hear_quad
+		COMMAND ${CMAKE_COMMAND} -E env PX4_SYS_AUTOSTART=3010 $<TARGET_FILE:px4>
+		WORKING_DIRECTORY ${SITL_WORKING_DIR}
+		USES_TERMINAL
+		DEPENDS px4
+		COMMENT ">>> launching px4 hear_quad (SYS_AUTOSTART=3010) <<<"
+	)
+
 	# install
 
 	# px4 dirs
