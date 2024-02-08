@@ -79,7 +79,6 @@ build_packages --> launch_mavros
     2. [Mavros and Offboard Installation](#Mavros_and_Offboard_Installation)
     3. [QGroundControl](#QGroundControl)
 2. [Run SITL in offboard mode](#How_to_run_SITL_in_offboard_mode)
-3. [How to run HEAR_SITL](#HEAR_SITL)
 3. [Setup of Pixhawk](#Setup_of_Pixhawk)
     1. [Loading pre-built firmware](#pre-built)
     2. [Building custom firmware](#custom)
@@ -99,12 +98,24 @@ We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a comm
     sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio -y
     ```
 
-- Clone `PX4-Autopilot` into home directory:
+- Installation Guide [(Reference)](https://docs.px4.io/main/en/dev_setup/dev_env_linux_ubuntu.html):
+
+1. Clone `PX4-Autopilot` into home directory:
 
     ```bash
-    cd ~
+    cd
     git clone https://github.com/Mu99-M/PX4-Autopilot.git --recursive
     ```
+
+2. Run the ubuntu.sh with no arguments (in a bash shell) to install everything:
+
+    ```bash
+    cd
+    bash ./PX4-Autopilot/Tools/setup/ubuntu.sh
+    ```
+
+3. Restart the computer on completion.
+
 
 ## Mavros and Offboard Installation <a name="Mavros_and_Offboard_Installation"></a>
 - The offb node has 3 jobs:
@@ -112,27 +123,10 @@ We will need to install PX4-Autopilot, Mavlink, Mavros to be able to have a comm
     2. Arm the vehicle and checks if it's disarmed to try arming again.
     3. Publishing values to SITL.
 
-### Pre-installation:
+### Installation:
 1. Install ROS Noetic if not installed following [this guide](https://wiki.ros.org/noetic/Installation/Ubuntu).
 
-2. Install these dependencies:
-
-    ```bash
-    sudo apt install python3-catkin-tools python3-rosinstall-generator python3-osrf-pycommon -y
-    pip3 install future
-    ```
-
-### Installation:
-
-```bash
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
-git clone https://github.com/Mu99-M/offboard_testing.git --recursive
-cd ..
-sudo ./src/mavros/mavros/scripts/install_geographiclib_datasets.sh      # Install GeographicLib datasets
-catkin build
-source devel/setup.bash
-```
+2. Clone and build [offboard_testing](https://github.com/Mu99-M/offboard_testing) repo.
 
 Now everthing is ready to be used from companion computer side.
 
@@ -161,46 +155,15 @@ Now everthing is ready to be used from companion computer side.
     roslaunch offb starting.launch
     ```
 
-# How to run HEAR_SITL <a name="HEAR_SITL"></a>
-1. Build px4 in sitl
-
-    ```bash
-    cd ~/PX4-Autopilot
-    make px4_sitl_default none
-    ```
-
-2. Launch `px4.launch` node
-
-    ```bash
-    roslaunch mavros px4.launch fcu_url:=udp://:14540@14555
-    ```
-
-3. Launch `flight_controller`
-
-    ```bash
-    cd ~/HEAR_FC
-    roslaunch flight_controller flight_controller.launch DRONE_NAME:=UAV1
-    ```
-
-4. offb Node
-
-    ```bash
-    roslaunch offb starting.launch
-    ```
-
-5. Launch `mission_scenario`
-
-    ```bash
-    cd ~/HEAR_MC
-    roslaunch hear_mc_example mission_scenario.launch
-    ```
-
-
-- You can publish the position from `vehicle_local_pos` topic
-
-    ```bash
-    rostopic echo /mavros/vehicle_local_position/vehicle_local_pos
-    ```
+> Note:
+> You may need to change the airframe if the vehicle is not armed and there is `Preflight Fail`.
+>
+>    ```bash
+>    cd ~/PX4-Autopilot
+>    make px4_sitl_default none
+>    param set SYS_AUTOSTART 3011
+>    ```
+> Then restart the PX4.
 
 # Setup of Pixhawk / PX4 <a name="Setup_of_Pixhawk"></a>
 You can either use [(1) pre-buit](#pre-built) firmware files or [(2) custom build](#custom) the firmware from source. Both procedures are describe below:
@@ -248,15 +211,15 @@ If you have already configured a static IP for your pixhawk and companion comput
 3. Enter the following commands: \
    echo DEVICE=eth0 > /fs/microsd/net.cfg \
                                         echo BOOTPROTO=static >> /fs/microsd/net.cfg\
-                                        echo IPADDR=192.168.0.4 >> /fs/microsd/net.cfg\
+                                        echo IPADDR=192.168.144.4 >> /fs/microsd/net.cfg\
                                         echo NETMASK=255.255.255.0 >>/fs/microsd/net.cfg\
-                                        echo ROUTER=192.168.0.1 >>/fs/microsd/net.cfg\
-                                        echo DNS=192.168.0.1 >>/fs/microsd/net.cfg\
-   The IPADDR could be chosen by the user. Our default configuration use `IPADDR=192.168.0.4` as the IP address of the pixhawk. The pixhawk subnet should match the subnet of the companion computer.
+                                        echo ROUTER=192.168.144.1 >>/fs/microsd/net.cfg\
+                                        echo DNS=192.168.144.1 >>/fs/microsd/net.cfg\
+   The IPADDR could be chosen by the user. Our default configuration use `IPADDR=192.168.144.4` as the IP address of the pixhawk. The pixhawk subnet should match the subnet of the companion computer.
 4. Connect the pixhawk to an external power source, and connect the ethernet cable to the companion computer / PC.
-5. If the companion computer / PC runs ubuntu: on the Companion Computer / PC, go to network settings > Wired > settings. Go to IPv4 settings and add your IPADDR of your choising (ex: 192.168.0.6) and the NETMASK 255.255.255.0
+5. If the companion computer / PC runs ubuntu: on the Companion Computer / PC, go to network settings > Wired > settings. Go to IPv4 settings and add your IPADDR of your choising (ex: 192.168.144.6) and the NETMASK 255.255.255.0
 6.If the companion computer runs rapsbian (e.g. using CM4 baseboard), refer to this [guide](https://www.ionos.com/digitalguide/server/configuration/provide-raspberry-pi-with-a-static-ip-address/) to setup a static IP for your raspberry bi.
-7. Try to ping the pixhawk ip from the companion computer by running the command `ping 192.168.0.4` from the terminal.
+7. Try to ping the pixhawk ip from the companion computer by running the command `ping 192.168.144.4` from the terminal.
 8. Go to params in QGC and change the following settings `MAV_x_CONFIG`, where `x` is the instance number. Our default configuration uses `x=2` instance for ethernet communication.
 9.  In QGroundControl, search for the `MAV_x_CONFIG` parameter.
 10. Set the value of the `MAV_x_CONFIG` parameter to `ethernet`.
@@ -273,7 +236,7 @@ For using MAVROS on the companion computer to communicate with the pixhawk over 
 ```bash
 roslaunch mavros px4.launch fcu_url:=udp://@IPADDR:14540@
 ```
-where IPADDR is the ip address of the pixhawk (by default 192.168.0.4).
+where IPADDR is the ip address of the pixhawk (by default 192.168.144.4).
 
 
 ##### 2. Using UART
