@@ -211,15 +211,15 @@ If you have already configured a static IP for your pixhawk and companion comput
 3. Enter the following commands: \
    echo DEVICE=eth0 > /fs/microsd/net.cfg \
                                         echo BOOTPROTO=static >> /fs/microsd/net.cfg\
-                                        echo IPADDR=192.168.0.4 >> /fs/microsd/net.cfg\
+                                        echo IPADDR=192.168.144.4 >> /fs/microsd/net.cfg\
                                         echo NETMASK=255.255.255.0 >>/fs/microsd/net.cfg\
-                                        echo ROUTER=192.168.0.1 >>/fs/microsd/net.cfg\
-                                        echo DNS=192.168.0.1 >>/fs/microsd/net.cfg\
-   The IPADDR could be chosen by the user. Our default configuration use `IPADDR=192.168.0.4` as the IP address of the pixhawk. The pixhawk subnet should match the subnet of the companion computer.
+                                        echo ROUTER=192.168.144.1 >>/fs/microsd/net.cfg\
+                                        echo DNS=192.168.144.1 >>/fs/microsd/net.cfg\
+   The IPADDR could be chosen by the user. Our default configuration use `IPADDR=192.168.144.4` as the IP address of the pixhawk. The pixhawk subnet should match the subnet of the companion computer.
 4. Connect the pixhawk to an external power source, and connect the ethernet cable to the companion computer / PC.
-5. If the companion computer / PC runs ubuntu: on the Companion Computer / PC, go to network settings > Wired > settings. Go to IPv4 settings and add your IPADDR of your choising (ex: 192.168.0.6) and the NETMASK 255.255.255.0
+5. If the companion computer / PC runs ubuntu: on the Companion Computer / PC, go to network settings > Wired > settings. Go to IPv4 settings and add your IPADDR of your choising (ex: 192.168.144.6) and the NETMASK 255.255.255.0
 6.If the companion computer runs rapsbian (e.g. using CM4 baseboard), refer to this [guide](https://www.ionos.com/digitalguide/server/configuration/provide-raspberry-pi-with-a-static-ip-address/) to setup a static IP for your raspberry bi.
-7. Try to ping the pixhawk ip from the companion computer by running the command `ping 192.168.0.4` from the terminal.
+7. Try to ping the pixhawk ip from the companion computer by running the command `ping 192.168.144.4` from the terminal.
 8. Go to params in QGC and change the following settings `MAV_x_CONFIG`, where `x` is the instance number. Our default configuration uses `x=2` instance for ethernet communication.
 9.  In QGroundControl, search for the `MAV_x_CONFIG` parameter.
 10. Set the value of the `MAV_x_CONFIG` parameter to `ethernet`.
@@ -236,7 +236,7 @@ For using MAVROS on the companion computer to communicate with the pixhawk over 
 ```bash
 roslaunch mavros px4.launch fcu_url:=udp://@IPADDR:14540@
 ```
-where IPADDR is the ip address of the pixhawk (by default 192.168.0.4).
+where IPADDR is the ip address of the pixhawk (by default 192.168.144.4).
 
 
 ##### 2. Using UART

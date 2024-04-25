@@ -209,7 +209,10 @@ elif [ "$PX4_SIM_MODEL" = "hear_hexa" ] || [ "$PX4_SIM_MODEL" = "hear_quad" ]; t
 		simulator_mavlink start -h "${PX4_SIM_HOSTNAME}" "${simulator_tcp_port}"
 	fi
 
+	param set SYS_AUTOSTART 3011
+
 	param set EKF2_HGT_REF 3
+
 	param set EKF2_GPS_CTRL 0
 	param set EKF2_BARO_CTRL 0
 	param set EKF2_RNG_CTRL 0
