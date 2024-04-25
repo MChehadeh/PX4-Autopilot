@@ -1711,6 +1711,7 @@ Mavlink::configure_streams_to_default(const char *configure_single_stream)
 		configure_stream_local("ATTITUDE", 200.0f);
 		configure_stream_local("RC_CHANNELS", 200.0f);
 		// configure_stream_local("ACTUATOR_OUTPUTS",100.0f);
+		configure_stream_local("GPS_GLOBAL_ORIGIN", 1.0f);
 		break;
 
 	case MAVLINK_MODE_CONFIG: // USB
