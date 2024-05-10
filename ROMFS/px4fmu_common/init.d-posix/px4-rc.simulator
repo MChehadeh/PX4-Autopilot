@@ -212,6 +212,7 @@ else
 
 	param set SYS_AUTOSTART 3011 #TODO This should be ready from the user
 
+	param set EKF2_HGT_REF 3
 	param set EKF2_GPS_CTRL 0
 	param set EKF2_BARO_CTRL 0
 	param set EKF2_RNG_CTRL 0

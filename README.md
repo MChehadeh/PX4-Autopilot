@@ -257,6 +257,12 @@ The landing detector of the PX4 can disarm the drone if not configured properly.
 1. Set the value of the `COM_DISARM_LAND` parameter to `-1`.
 2. Set the value of the `MPC_THR_HOVER` parameter to a low value (e.g. `0.25`).
 
+### Disabling autodisarming at delayed takeoff
+Set the value of the 'COM_DISARM_PRFLT' parameter to '1000.0'.
+
+### Disarming PX4 when connection is lost
+Set the value of the 'COM_OBL_RC_ACT' parameter to '7'.
+
 #### Change Frequency for navigation topics
 We are interested in 3 topics for now (`VEHICLE_ANGULAR_VELOCITY`, `VEHICLE_ATTITUDE`, and `VEHICLE_LOCAL_POSITION`).
 
